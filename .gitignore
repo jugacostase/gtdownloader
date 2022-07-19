@@ -1,0 +1,10 @@
+**/.DS_Store
+**/twitter_keys.yaml
+.idea
+__pycache__
+credentials
+downloads
+Tests.ipynb
+get_wordcloud.py
+download_tweets.py
+parameters.csv
