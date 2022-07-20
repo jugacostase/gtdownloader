@@ -11,14 +11,14 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    downloader = TweetDownloader(credentials='credentials/twitter_keys.yaml')
+    downloader = TweetDownloader(credentials='credentials/twitter_keys.yaml', output_folder='downloads')
 
     tweets, places, authors = downloader.get_tweets('Marcelo',
-                                                             lang='en',
-                                                             place='US',
-                                                             max_tweets=10,
-                                                             include_replies=False,
-                                                             start_time='07/17/2021',
-                                                             end_time='07/21/2021')
+                                                    lang='en',
+                                                    place='US',
+                                                    max_tweets=10,
+                                                    include_replies=False,
+                                                    start_time='07/17/2021',
+                                                    end_time='07/21/2021')
 
 
