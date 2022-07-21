@@ -1,24 +1,15 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from TweetDownloader import TweetDownloader
+from TweetGeoGenerator import TweetGeoGenerator
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+
     downloader = TweetDownloader(credentials='credentials/twitter_keys.yaml', output_folder='downloads')
 
-    tweets, places, authors = downloader.get_tweets('Marcelo',
-                                                    lang='en',
-                                                    place='US',
-                                                    max_tweets=10,
-                                                    include_replies=False,
-                                                    start_time='07/17/2021',
+    downloader.get_tweets('covid', lang='en', place='US', max_tweets=600,
+                          include_replies=False, start_time='07/17/2021',
                                                     end_time='07/21/2021')
 
+    #downloader.tweets_from_csv('parameters/parameters.csv')
 
+    tgeo = TweetGeoGenerator(downloader)
+    tgeo.create_gdf()

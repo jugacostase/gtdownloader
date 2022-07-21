@@ -31,7 +31,6 @@ class TweetDownloader:
     """
     Instantiate the tweet downloads class.
     """
-
     def __init__(self, credentials,
                  name='Project_{}'.format(datetime.now().strftime('%m%d%Y_%H%M%S')),
                  output_folder=''):
@@ -294,5 +293,34 @@ class TweetDownloader:
         self.authors_df = df_authors
 
         print('Done')
+
+    def tweets_from_csv(self, path, sep=',', save_temp=True):
+        # loading config values into a DataFrame
+        df_param = pd.read_csv(path, sep=sep)
+
+        # storing parameters into variables to be passed to the query obj
+        query = df_param.query('parameter=="query"')['value'].item()
+        start_time = df_param.query('parameter=="start_time"')['value'].item()
+        end_time = df_param.query('parameter=="end_time"')['value'].item()
+        max_tweets_total = int(df_param.query('parameter=="max_tweets"')['value'].item())
+        max_tweets_page = int(df_param.query('parameter=="max_tweets_page"')['value'].item())
+        filename = df_param.query('parameter=="filename"')['value'].item()
+
+        ### Query parameters. See the parameters.csv to modify or see the description
+        ### of each parameter
+        query_params = {'query': query,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'expansions': 'geo.place_id,author_id',
+                        'place.fields': 'contained_within,country,country_code,full_name,geo,id,name,place_type',
+                        'tweet.fields': 'created_at,author_id,id,public_metrics,conversation_id',
+                        'user.fields': 'id,location,name,username,public_metrics',
+                        'max_results': max_tweets_page
+                        }
+        ### Creates a timestamp to avoid overwriting old files
+        self.timestamp = datetime.now().strftime('_%m%d%Y_%H%M%S.csv')
+
+        # Gets tweets
+        self.tweets_from_query(query_params, max_tweets_page, save_temp, max_tweets_total, reply_mode=False)
 
 
