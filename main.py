@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     downloader = TweetDownloader(credentials='credentials/twitter_keys.yaml', output_folder='downloads')
 
-    downloader.get_tweets('covid', lang='en', place='US', max_tweets=600,
+    downloader.get_tweets('Petro', lang='es', place='CO', max_tweets=600,
                           include_replies=False, start_time='07/17/2021',
                                                     end_time='07/21/2021')
 

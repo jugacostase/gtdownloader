@@ -50,7 +50,6 @@ class TweetDownloader:
                                             env_overwrite=False)
         self.timestamp = None
 
-
     def tweets_from_query(self, query_params, max_page, save_temp, max_tweets, reply_mode=False):
         ### initializes a list to store retrieved tweet pages
         list_tweet_pages = []
@@ -260,7 +259,6 @@ class TweetDownloader:
         self.replies_df = df_tweets_rep
 
         return df_tweets_rep
-
 
     def build_dataframes(self):
         ### Loop that goes through the tweet pages and stores data in DataFrames
