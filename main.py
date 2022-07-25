@@ -13,3 +13,4 @@ if __name__ == '__main__':
 
     tgeo = TweetGeoGenerator(downloader)
     tgeo.create_gdf()
+    tgeo.save_tweets_shp()
