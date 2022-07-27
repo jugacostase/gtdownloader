@@ -4,12 +4,25 @@ Twitter API usage for tweets download
 @author: Juan Acosta
 """
 import os
+import ast
 import time
+import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from searchtweets import collect_results, load_credentials
+from TweetGeoGenerator import TweetGeoGenerator
 
+def get_attribute_id(x, attribute_id):
+    try:
+        return ast.literal_eval(x)[attribute_id]
+    except ValueError:
+        return np.nan
 
+def get_attribute_from_dict(x, attribute_id):
+    try:
+        return x[attribute_id]
+    except TypeError:
+        return np.nan
 
 def validate_date(date_text):
     try:
@@ -147,14 +160,9 @@ class TweetDownloader:
     def get_tweets(self, query,
                    start_time=(datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz"),
                    end_time=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                   lang=None,
-                   include_retweets=False,
-                   place=None,
-                   include_replies=False,
-                   max_replies=10,
-                   temp_replies=True,
-                   save_replies=False,
-                   max_tweets=10, max_page=500, save_temp=True, save_final=False):
+                   lang=None, include_retweets=False, place=None, has_geo=True,
+                   max_tweets=10, max_page=500, save_temp=True, save_final=True,
+                   save_replies=False, include_replies=False, max_replies=10, temp_replies=True,):
 
         ### Query parameters
 
@@ -168,6 +176,8 @@ class TweetDownloader:
             query += ' (lang:{})'.format(lang)
         if place:
             query += ' (place_country:{})'.format(place)
+        if has_geo:
+            query += ' (has:geo)'
         if not include_retweets:
             query += ' (-is:retweet)'
 
@@ -189,6 +199,17 @@ class TweetDownloader:
                                                                                               save_temp, max_tweets)
 
         if (save_final):
+            self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
+            # Creates date column in date format
+            self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
+            self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M%:%s')
+            self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'])
+
+            # Get metrics as separate columns:
+            self.tweets_df['likes'] = self.tweets_df.public_metrics.apply(lambda x: x['like_count'])
+            self.tweets_df['replies'] = self.tweets_df.public_metrics.apply(lambda x: x['reply_count'])
+            self.tweets_df['retweets'] = self.tweets_df.public_metrics.apply(lambda x: x['retweet_count'])
+
             ## saving final dataframes
             self.tweets_df.to_csv(filename + self.timestamp, index=False)
             self.places_df.to_csv(filename + '_places' + self.timestamp, index=False)
@@ -320,5 +341,16 @@ class TweetDownloader:
 
         # Gets tweets
         self.tweets_from_query(query_params, max_tweets_page, save_temp, max_tweets_total, reply_mode=False)
+
+    def tweets_to_shp(self, save_path='', geo_type='centroids'):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.save_tweets_shp(save_path, geo_type)
+        del tgeo
+
+    def preview_tweet_locations(self):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.plot_tweets_points()
 
 
