@@ -202,7 +202,7 @@ class TweetDownloader:
             self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
             # Creates date column in date format
             self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
-            self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M%:%s')
+            self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M%:%S')
             self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'])
 
             # Get metrics as separate columns:
@@ -351,6 +351,16 @@ class TweetDownloader:
     def preview_tweet_locations(self):
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
+        tgeo.simple_tweets_map()
+
+    def interactive_map(self):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
         tgeo.plot_tweets_points()
+
+    def interactive_map_aggregated(self):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.plot_tweets_aggregated()
 
 

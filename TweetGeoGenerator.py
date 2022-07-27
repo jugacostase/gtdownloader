@@ -85,24 +85,46 @@ class TweetGeoGenerator:
         self.places_centroid = self.places_centroid.to_crs("EPSG:4326")
         self.places_centroid.rename(columns={'id': 'place_id'}, inplace=True)
         self.tweets_centroid = pd.merge(self.places_centroid, self.tweets_df, on='place_id')
-        self.tweets_centroid.rename(columns={'id': 'place_id'}, inplace=True)
         self.tweets_centroid.drop(columns=['geo_x', 'geo_y'], inplace=True)
 
-    def plot_tweets_points(self):
-        #world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-        #base = world.plot(color='white', edgecolor='black')
-        #self.compute_centroids()
-        #self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
-        #plt.show()
+    def simple_tweets_map(self):
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        base = world.plot(color='white', edgecolor='black')
         self.compute_centroids()
+        self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
+        plt.show()
 
-        plot_gdf = self.tweets_centroid#.dissolve(by='place_id', aggfunc={'name':'first', 'likes':'count'})
+
+    def plot_tweets_points(self):
+
+        self.compute_centroids()
+        plot_gdf = self.tweets_centroid
         plot_gdf['lon'] = plot_gdf.geometry.x
         plot_gdf['lat'] = plot_gdf.geometry.y
 
-        fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'name', 'text', 'date']], lat='lat', lon='lon', color="name",
-                             hover_name="text",
-                              projection="natural earth")
+        fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'name']],
+                             lat='lat', lon='lon', color="name", hover_name="name", size='likes',
+                             projection="natural earth")
+        fig.show()
+
+    def plot_tweets_aggregated(self):
+        # world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        # base = world.plot(color='white', edgecolor='black')
+        # self.compute_centroids()
+        # self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
+        # plt.show()
+        self.compute_centroids()
+
+        plot_gdf = self.tweets_centroid.dissolve(by='place_id', aggfunc={'name': 'first',
+                                                                         'likes': 'count',
+                                                                         'text': 'first',
+                                                                         'date': 'first'})
+        plot_gdf['lon'] = plot_gdf.geometry.x
+        plot_gdf['lat'] = plot_gdf.geometry.y
+
+        fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'name']],
+                             lat='lat', lon='lon', color="name", hover_name="name", size='likes',
+                             projection="natural earth")
         fig.show()
 
 
