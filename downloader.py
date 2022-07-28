@@ -4,10 +4,10 @@ Leveraging
 @author: Juan Acosta
 """
 import os
-import ast
 import time
-import numpy as np
 import pandas as pd
+
+from utils import *
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -15,44 +15,59 @@ from datetime import datetime, timedelta
 from searchtweets import collect_results, load_credentials
 from geomethods import TweetGeoGenerator
 
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from wordcloud import WordCloud, STOPWORDS
 
 os.chdir(os.path.dirname(__file__))
 
-
-def get_attribute_id(x, attribute_id):
-    try:
-        return ast.literal_eval(x)[attribute_id]
-    except ValueError:
-        return np.nan
-
-
-def get_attribute_from_dict(x, attribute_id):
-    try:
-        return x[attribute_id]
-    except TypeError:
-        return np.nan
-
-
-def validate_date(date_text):
-    try:
-        datetime.strptime(date_text, '%Y-%m-%dT%H:%M:%Sz')
-        return date_text
-    except ValueError:
-        try:
-            date_obj = datetime.strptime(date_text, '%m/%d/%Y %H:%M:%S')
-        except ValueError:
-            try:
-                date_obj = datetime.strptime(date_text, '%m/%d/%Y')
-            except ValueError:
-                date_obj = datetime.strptime(date_text, '%m/%d/%Y %H:%M:')
-
-        return date_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
 class TweetDownloader:
-    """
-    Instantiate the tweet downloads class.
+    """Tweet downloading class.
+    The TweetDownloader class contains the main downloading function
+    as well as the storing and plotting functions accessible to the
+    user.
+
+    Parameters
+    ----------
+    credentials : str
+        A path pointing to the location of the TwitterAPI credentials file.
+    name : str, optional
+        The name to use when saving downloaded files and exports.
+        The default value 'Project_[date]' with the current date in
+        %m%d%Y_%H%M%S format.
+    output_folder : str, optional
+        Path to the folder in which saved information is going to be stored.
+        It defaults to the current location
+
+
+    Attributes
+    ----------
+    credentials : str
+        A path pointing to the location of the TwitterAPI credentials file.
+    name : str, optional
+        The name to use when saving downloaded files and exports.
+    output_folder : str, optional
+        Path to the folder in which saved information is going to be stored.
+    tweets : list
+        List of pages of the response tweet object obtained from Twitter
+        API calls.
+    authors : list
+        List of pages of the response authors object obtained from Twitter
+        API calls.
+    places : list
+        List of pages of the response location object obtained from Twitter
+        API calls.
+    replies : list
+        List of tweets that are replies to the tweets in the tweets attribute
+    tweets_df : pandas.DataFrame
+        Table with the tweets from the attribute tweets
+    authors_df : pandas.DataFrame
+        Table with the authors from the attribute authors
+    places_df : pandas.DataFrame
+        Table with the georreferenced locations from the attribute places
+    replies_df : pandas.DataFrame
+        Table containing replies to the tweets in the tweets_df table
+    search_args : dict
+        Dictionary containing the Twitter keys required to access the API
+
     """
 
     def __init__(self, credentials,
@@ -94,7 +109,7 @@ class TweetDownloader:
         while True:
 
             ### Collect results according to query parameters, tweets per page...
-            ### ... and authendication credentials
+            ### ... and authentication credentials
 
             tweets_page = collect_results(query_params, max_tweets=max_page,
                                           result_stream_args=self.search_args)
