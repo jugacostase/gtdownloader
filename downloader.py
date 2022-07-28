@@ -7,13 +7,13 @@ import os
 import time
 import pandas as pd
 
-from utils import *
+from .utils import *
 
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from searchtweets import collect_results, load_credentials
-from geomethods import TweetGeoGenerator
+from .geomethods import TweetGeoGenerator
 
 from wordcloud import WordCloud, STOPWORDS
 

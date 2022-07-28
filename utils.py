@@ -4,6 +4,7 @@ from datetime import datetime
 
 from shapely.geometry import Polygon
 
+
 def get_attribute_id(x, attribute_id):
     try:
         return ast.literal_eval(x)[attribute_id]
@@ -33,12 +34,6 @@ def validate_date(date_text):
 
         return date_obj.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-
-def get_attribute_id(x, attribute_id):
-    try:
-        return ast.literal_eval(x)[attribute_id]
-    except ValueError:
-        return np.nan
 
 def extract_bbox_polygon(x):
     lon1 = x['bbox'][0]
