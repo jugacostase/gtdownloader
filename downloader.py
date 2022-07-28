@@ -8,9 +8,20 @@ import ast
 import time
 import numpy as np
 import pandas as pd
+
+import seaborn as sns
+import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from searchtweets import collect_results, load_credentials
-from TweetGeoGenerator import TweetGeoGenerator
+from geomethods import TweetGeoGenerator
+
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+
+os.chdir(os.path.dirname(__file__))
+
+
+
+
 
 def get_attribute_id(x, attribute_id):
     try:
@@ -123,9 +134,14 @@ class TweetDownloader:
                     df_authors.to_csv(os.path.join(self.output_folder, 'temp_' + filename + '_authors' + self.timestamp),
                                       index=False)
 
+                    print('Current progress saved at:', os.path.join(self.output_folder, 'temp_' + filename + self.timestamp))
+
                 if (save_temp & reply_mode):
                     df_tweets.to_csv(os.path.join(self.output_folder, 'temp_' + filename + '_replies' + self.timestamp),
                                      index=False)
+                    print('Current progress saved at:',
+                          os.path.join(self.output_folder, 'temp_' + filename + self.timestamp))
+
 
                 ### Checks whether there are more pages and goes onto the next page...
                 try:
@@ -153,24 +169,20 @@ class TweetDownloader:
                 if zeros_count > 1:
                     break
 
-
-
         return list_tweet_pages, df_tweets, df_places, df_authors
 
     def get_tweets(self, query,
                    start_time=(datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz"),
                    end_time=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                   lang=None, include_retweets=False, place=None, has_geo=True,
+                   lang=None, include_retweets=False, place=None,
                    max_tweets=10, max_page=500, save_temp=True, save_final=True,
                    save_replies=False, include_replies=False, max_replies=10, temp_replies=True,):
 
         ### Query parameters
-
+        has_geo = True                       # This could be introduced as func parameter in a future version
         query = '({})'.format(query)
         ### Creates a timestamp to avoid overwriting old files
         self.timestamp = datetime.now().strftime('_%m%d%Y_%H%M%S.csv')
-
-        filename = self.name
 
         if lang:
             query += ' (lang:{})'.format(lang)
@@ -198,7 +210,9 @@ class TweetDownloader:
         self.tweets, self.tweets_df, self.places_df, self.authors_df = self.tweets_from_query(query_params, max_page,
                                                                                               save_temp, max_tweets)
 
-        if (save_final):
+        filename = os.path.join(self.output_folder, self.name)
+
+        if save_final:
             self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
             # Creates date column in date format
             self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
@@ -211,14 +225,17 @@ class TweetDownloader:
             self.tweets_df['retweets'] = self.tweets_df.public_metrics.apply(lambda x: x['retweet_count'])
 
             ## saving final dataframes
+
+
             self.tweets_df.to_csv(filename + self.timestamp, index=False)
             self.places_df.to_csv(filename + '_places' + self.timestamp, index=False)
             self.authors_df.to_csv(filename + '_authors' + self.timestamp, index=False)
 
-            print('csv files {} and {} were generated'.format(filename + self.timestamp,
-                                                              filename + '_places' + self.timestamp))
+            print('csv files {}, {}, and {} were generated'.format(filename + self.timestamp,
+                                                                   filename + '_places' + self.timestamp,
+                                                                   filename + '_authors' + self.timestamp))
 
-        if (include_replies):
+        if include_replies:
             print('Preparing to get tweet replies...')
             if(len(self.tweets) > 0 ):
                 self.replies_df = self.get_replies(max_replies=max_replies,
@@ -324,6 +341,11 @@ class TweetDownloader:
         max_tweets_total = int(df_param.query('parameter=="max_tweets"')['value'].item())
         max_tweets_page = int(df_param.query('parameter=="max_tweets_page"')['value'].item())
         filename = df_param.query('parameter=="filename"')['value'].item()
+        plot_wordcloud = df_param.query('parameter=="wordcloud"')['value'].item()
+        plot_barplot = df_param.query('parameter=="barplot"')['value'].item()
+        custom_stopwords = df_param.query('parameter=="stopwords"')['value'].item()
+
+        self.name = filename
 
         ### Query parameters. See the parameters.csv to modify or see the description
         ### of each parameter
@@ -340,13 +362,31 @@ class TweetDownloader:
         self.timestamp = datetime.now().strftime('_%m%d%Y_%H%M%S.csv')
 
         # Gets tweets
-        self.tweets_from_query(query_params, max_tweets_page, save_temp, max_tweets_total, reply_mode=False)
+        self.tweets, self.tweets_df, self.places_df, self.authors_df = self.tweets_from_query(query_params,
+                                                                                              max_tweets_page,
+                                                                                              save_temp,
+                                                                                              max_tweets_total,
+                                                                                              reply_mode=False)
+
+        if plot_wordcloud.lower() == 'yes':
+            words_tuple = ast.literal_eval(custom_stopwords)
+            stopwords_list = [i.strip() for i in words_tuple]
+            if plot_barplot.lower() == 'yes':
+                plot_barplot = True
+            else:
+                plot_barplot = False
+            self.wordcloud(custom_stopwords=stopwords_list, save_wordcloud=True,
+                           bar_plot=plot_barplot, save_bar_plot=True)
 
     def tweets_to_shp(self, save_path='', geo_type='centroids'):
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.save_tweets_shp(save_path, geo_type)
-        del tgeo
+
+    def places_to_shp(self, save_path='', geo_type='centroids'):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.save_places_shp(save_path, geo_type)
 
     def preview_tweet_locations(self):
         tgeo = TweetGeoGenerator(self)
@@ -363,4 +403,65 @@ class TweetDownloader:
         tgeo.create_gdf()
         tgeo.plot_tweets_aggregated()
 
+    def plot_heatmap(self, radius=20):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.plot_tweets_heatmap(radius)
+
+    def map_animation(self, time_unit):
+        tgeo = TweetGeoGenerator(self)
+        tgeo.create_gdf()
+        tgeo.bubble_animation(time_unit)
+
+    def wordcloud(self, custom_stopwords=[], save_wordcloud=False, save_path='', bar_plot=False, save_bar_plot=False):
+        plt.rcParams.update({'font.size': 40})
+
+        df_tweets = self.tweets_df.copy()
+
+        ## gets all text contained in tweets
+        text = " ".join(review for review in df_tweets.text.astype(str))
+        print("There are {} words in the combination of all cells in column text.".format(len(text)))
+
+        ## stopwords are the words we don't want to take into account in wordclouds or wordcounts
+        stopwords = set(STOPWORDS)
+        ## update this list with your desired stopwords
+        stopwords.update(custom_stopwords)
+
+        ## creates wordcloud using the wordcloud library, stopwords, and tweets text
+        wordcloud = WordCloud(stopwords=stopwords, background_color="white",
+                              collocations=False, min_word_length=4,
+                              width=800, height=400).generate(text)
+
+        ## plots wordcloud
+        plt.figure(figsize=(40, 20))
+        plt.tight_layout(pad=0)
+        plt.imshow(wordcloud, interpolation='bilinear')
+        if save_wordcloud:
+            plt.savefig(os.path.join(save_path, self.name + '_wordcloud.png'))
+            print('Wordcloud saved at', os.path.join(save_path, self.name + '_wordcloud.png'))
+        else:
+            plt.show()
+
+        if bar_plot:
+            ## creates a dataframe to handle wordcount retrieved from wordcloud
+            df_wordcount = pd.DataFrame(wordcloud.process_text(text).items(),
+                                        columns=['word', 'freq'])
+            ## sorts word count in descending order
+            df_wordcount.sort_values('freq', ascending=False, inplace=True)
+
+            ## plots word count bar chart
+            plt.figure(figsize=(40, 20))
+            plt.xticks(fontsize=40)
+            plt.yticks(fontsize=40)
+            plt.xlabel("freq", fontsize=50)
+            plt.ylabel("word", fontsize=50)
+            if save_bar_plot:
+                sns.barplot(df_wordcount.freq[:20],
+                            df_wordcount.word[:20]).get_figure().savefig(os.path.join(save_path,
+                                                                                      self.name + '_barplot.png'))
+                print('Barplot saved at', os.path.join(save_path, self.name + '_barplot.png'))
+            else:
+                sns.barplot(df_wordcount.freq[:20],
+                            df_wordcount.word[:20]).get_figure()
+                plt.show()
 
