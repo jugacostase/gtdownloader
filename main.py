@@ -9,7 +9,7 @@ if __name__ == '__main__':
                           start_time='07/23/2022', end_time='07/26/2022')
 
     #downloader.tweets_to_shp('exports')
-    #downloader.map_animation('second')
+    downloader.map_animation('hour')
     #downloader.places_to_shp('exports', 'centro')
-    downloader.wordcloud()
+    #downloader.wordcloud()
     #downloader.tweets_from_csv(path='search_params/parameters.csv')

@@ -179,10 +179,12 @@ class TweetGeoGenerator:
         }
         plot_gdf = plot_gdf.groupby(group_list_final + ['lat', 'lon']).agg(agg_dict).reset_index()
         plot_gdf.rename(columns={'id': 'tweet_count'}, inplace=True)
-        plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final]).dt.strftime('%m/%d/%Y %H:%M%:%s')
+        plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final]).dt.strftime('%m/%d/%Y %H:%M%:%S')
 
         fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
                              hover_name="full_name", size='tweet_count',
                              animation_frame='time',
                              projection="natural earth")
+
+        fig.layout.update(showlegend=False)
         fig.show()
