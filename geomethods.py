@@ -1,33 +1,52 @@
 import os
-import ast
 
-import numpy as np
 import pandas as pd
 import geopandas as gpd
 
-from shapely.geometry import Polygon
 import plotly.express as px
-
 import matplotlib.pyplot as plt
 
 
-
-def get_attribute_id(x, attribute_id):
-    try:
-        return ast.literal_eval(x)[attribute_id]
-    except ValueError:
-        return np.nan
-
-def extract_bbox_polygon(x):
-    lon1 = x['bbox'][0]
-    lat1 = x['bbox'][1]
-    lon2 = x['bbox'][2]
-    lat2 = x['bbox'][3]
-    polygon = Polygon([(lon1, lat1), (lon1, lat2), (lon2, lat2), (lon2, lat1)])
-    return polygon
-
-
 class TweetGeoGenerator:
+    """Geographical methods class.
+    The TweetGeoGenerator leverages the geographical information
+    contained in the downloads to generate files and visualizations.
+
+    Parameters
+    ----------
+    downloader : TweetDownloader
+        A tweet downloader object with tweets attribute.
+
+    Attributes
+    ----------
+    tweets_df : pandas.DataFrame
+        Table with the tweets from the attribute tweets
+    authors_df : pandas.DataFrame
+        Table with the authors from the attribute authors
+    places_df : pandas.DataFrame
+        Table with the georreferenced locations from the attribute places
+    timestamp : str
+        A string to append at the end of saved files, so they all have a
+        timestamp
+    tweets_centroid : geopandas.GeoDataFrame
+        A geodataframe containing the tweets. The geometry is the centroid
+        of the corresponding tweet location bounding box
+    places_centroid : geopandas.GeoDataFrame
+        A geodataframe containing the tweet locations. The geometry is the
+        centroid of the corresponding location bounding box
+    authors_centroid : geopandas.GeoDataFrame
+        A geodataframe containing the authors location. The geometry is
+        the centroid of the corresponding location bounding box
+    tweets_bbox : geopandas.GeoDataFrame
+        A geodataframe containing the tweets. The geometry is the
+        corresponding tweet location bounding box
+    places_bbox : geopandas.GeoDataFrame
+        A geodataframe containing the tweet locations. The geometry is the
+        corresponding tweet location bounding box
+    authors_bbox : geopandas.GeoDataFrame
+        A geodataframe containing the tweets authors. The geometry is the
+        corresponding location bounding box
+    """
 
     def __init__(self, downloader):
         self.tweets_df = downloader.tweets_df
@@ -40,7 +59,7 @@ class TweetGeoGenerator:
         self.authors_centroid = None
         self.tweets_bbox = None
         self.places_bbox = None
-        self.authors__bbox = None
+        self.authors_bbox = None
 
     def create_gdf(self):
         # Create Polygon from bboxes in the places dataframe before creating geodataframe
@@ -175,7 +194,7 @@ class TweetGeoGenerator:
         agg_dict = {
             'country': 'first',
             'full_name': 'first',
-            'id':'count'
+            'id': 'count'
         }
         plot_gdf = plot_gdf.groupby(group_list_final + ['lat', 'lon']).agg(agg_dict).reset_index()
         plot_gdf.rename(columns={'id': 'tweet_count'}, inplace=True)
