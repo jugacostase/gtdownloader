@@ -1,2 +1,2 @@
-# tweetgeostats
-A Python package for the downloading and geographical analysis of tweets
+# tweetgeodownloader
+A Python package for the easy downloading of tweets with geographical information
