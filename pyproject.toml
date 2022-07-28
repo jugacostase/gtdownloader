@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tweetgeodownloader_jugacostase"
+version = "0.0.1"
+authors = [
+  { name="Juan G. Acosta", email="jacost42@uic.edu" },
+]
+description = "A Python package for the simple downloading of tweets with geographical information"
+readme = "README.md"
+license = { file="LICENSE.txt" }
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/jugacostase/tweetgeodownloader"
