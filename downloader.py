@@ -19,6 +19,7 @@ from wordcloud import WordCloud, STOPWORDS
 
 os.chdir(os.path.dirname(__file__))
 
+
 class TweetDownloader:
     """Tweet downloading class.
     The TweetDownloader class contains the main downloading function
@@ -67,7 +68,9 @@ class TweetDownloader:
         Table containing replies to the tweets in the tweets_df table
     search_args : dict
         Dictionary containing the Twitter keys required to access the API
-
+    timestamp : str
+        A string to append at the end of saved files, so they all have a
+        timestamp
     """
 
     def __init__(self, credentials,
@@ -90,35 +93,35 @@ class TweetDownloader:
         self.timestamp = None
 
     def tweets_from_query(self, query_params, max_page, save_temp, max_tweets, reply_mode=False):
-        ### initializes a list to store retrieved tweet pages
+        # initializes a list to store retrieved tweet pages
         list_tweet_pages = []
-        ### initializes tweet page count
+        # initializes tweet page count
         page_count = 1
-        ### initializes retrieved tweets count
+        # initializes retrieved tweets count
         tweet_count = 0
-        ### count to stop algorithm when search has no results
+        # count to stop algorithm when search has no results
         zeros_count = 0
 
         filename = self.name
 
-        ### Creates data frames to store tweets, locations, and author data
+        # Creates data frames to store tweets, locations, and author data
         df_tweets = pd.DataFrame()
         df_places = pd.DataFrame()
         df_authors = pd.DataFrame()
-        ### loop that ends whenever desired number of tweets is retrieved
+        # loop that ends whenever desired number of tweets is retrieved
         while True:
 
-            ### Collect results according to query parameters, tweets per page...
-            ### ... and authentication credentials
+            # Collect results according to query parameters, tweets per page...
+            # ... and authentication credentials
 
             tweets_page = collect_results(query_params, max_tweets=max_page,
                                           result_stream_args=self.search_args)
-            if (len(tweets_page) != 0):  ## ensures we don't process a blank page
+            if len(tweets_page) != 0:  # ensures we don't process a blank page
 
-                ### Adds retrieved page of tweets to list of pages
+                # Adds retrieved page of tweets to list of pages
                 list_tweet_pages.append(tweets_page)
 
-                ### Adds number of retrieved tweets to tweet count
+                # Adds number of retrieved tweets to tweet count
                 tweet_count += tweets_page[0]['meta']['result_count']
 
                 df_page = pd.DataFrame(tweets_page[0]['data'])
@@ -135,13 +138,13 @@ class TweetDownloader:
                     # print('Building DataFrame from Tweet pages...')
                     pass
 
-                ### resets index of dataframes to avoid redundancy after concatenation
+                # resets index of dataframes to avoid redundancy after concatenation
                 df_tweets.reset_index(drop=True, inplace=True)
                 df_places.reset_index(drop=True, inplace=True)
                 df_authors.reset_index(drop=True, inplace=True)
 
-                ## saving temporal dataframes
-                if (save_temp & (not reply_mode)):
+                # saving temporal dataframes
+                if save_temp & (not reply_mode):
                     df_tweets.to_csv(os.path.join(self.output_folder, f'temp_{filename}_tweets_{self.timestamp}'),
                                      index=False)
                     df_places.to_csv(os.path.join(self.output_folder, f'temp_{filename}_places_{self.timestamp}'),
@@ -153,13 +156,13 @@ class TweetDownloader:
                     print('Current progress saved at:',
                           os.path.join(self.output_folder, f'temp_{filename}_{self.timestamp}'))
 
-                if (save_temp & reply_mode):
+                if save_temp & reply_mode:
                     df_tweets.to_csv(os.path.join(self.output_folder, f'temp_{filename}_replies_{self.timestamp}'),
                                      index=False)
                     print('Current progress saved at:',
                           os.path.join(self.output_folder, f'temp_{filename}_{self.timestamp}'))
 
-                ### Checks whether there are more pages and goes onto the next page...
+                # Checks whether there are more pages and goes onto the next page...
                 try:
                     if (not reply_mode):
                         print('Ending page %s with next_token=%s. %s tweets retrieved (%s total)' % (
@@ -170,12 +173,12 @@ class TweetDownloader:
                     page_count += 1
                     time.sleep(5)
 
-                ### ...or if final page is reached then the loop ends
+                # ...or if final page is reached then the loop ends
                 except KeyError:
                     # print('Ending page %s. This was the final page. %s tweets retrieved' % (page_count, tweet_count))
                     break
-                ### Ends loop if maximum number of tweets is reached
-                if ((tweet_count >= max_tweets) & (not reply_mode)):
+                # Ends loop if maximum number of tweets is reached
+                if (tweet_count >= max_tweets) & (not reply_mode):
                     print('Intended amount of tweets reached. %s tweets retrieved. Goal was %s' % (
                         tweet_count, max_tweets))
                     break
@@ -194,10 +197,10 @@ class TweetDownloader:
                    max_tweets=10, max_page=500, save_temp=True, save_final=True,
                    save_replies=False, include_replies=False, max_replies=10, temp_replies=True, ):
 
-        ### Query parameters
+        # Query parameters
         has_geo = True  # This could be introduced as func parameter in a future version
         query = '({})'.format(query)
-        ### Creates a timestamp to avoid overwriting old files
+        # Creates a timestamp to avoid overwriting old files
         self.timestamp = datetime.now().strftime('%m%d%Y_%H%M%S.csv')
 
         if lang:
@@ -240,7 +243,7 @@ class TweetDownloader:
             self.tweets_df['replies'] = self.tweets_df.public_metrics.apply(lambda x: x['reply_count'])
             self.tweets_df['retweets'] = self.tweets_df.public_metrics.apply(lambda x: x['retweet_count'])
 
-            ## saving final dataframes
+            # saving final dataframes
 
             self.tweets_df.to_csv(f'{filename}_tweets_{self.timestamp}', index=False)
             self.places_df.to_csv(f'{filename}_places_{self.timestamp}', index=False)
@@ -252,14 +255,14 @@ class TweetDownloader:
 
         if include_replies:
             print('Preparing to get tweet replies...')
-            if (len(self.tweets) > 0):
+            if len(self.tweets) > 0:
                 self.replies_df = self.get_replies(max_replies=max_replies,
                                                    save_temp=temp_replies, save_final=save_replies)
             else:
                 print('There were no tweets to get replies from')
 
-        ## Still unsure about whether to have values to unpack or just have the attributes updated
-        #   return self.tweets_df, self.places_df, self.authors_df, self.replies_df
+        # Still unsure about whether to have values to unpack or just have the attributes updated
+        #    return self.tweets_df, self.places_df, self.authors_df, self.replies_df
 
         # else:
         #    return self.tweets_df, self.places_df, self.authors_df,
@@ -283,12 +286,12 @@ class TweetDownloader:
 
             query = 'conversation_id:{}'.format(conversation_id)
 
-            ### Maximum amount of tweets to retrieve. This is only the maximum and not a
-            ### Maximum tweets retrieved on each "page". Must be integer between 10 and 500
+            # Maximum amount of tweets to retrieve. This is only the maximum and not a
+            # Maximum tweets retrieved on each "page". Must be integer between 10 and 500
             max_tweets_page = max_replies if max_replies <= 500 else 500
 
-            ### query parameters. For info see:
-            ## https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-all
+            # query parameters. For info see:
+            # https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-all
 
             query_params = {'query': query,
                             'start_time': '2007-01-01T00:00:00z',
@@ -314,7 +317,7 @@ class TweetDownloader:
         return df_tweets_rep
 
     def build_dataframes(self):
-        ### Loop that goes through the tweet pages and stores data in DataFrames
+        # Loop that goes through the tweet pages and stores data in DataFrames
         print('Building DataFrame from Tweet pages...')
 
         df_tweets = pd.DataFrame()
@@ -334,7 +337,7 @@ class TweetDownloader:
             df_tweets = pd.concat([df_tweets, df_page])
             df_authors = pd.concat([df_authors, df_page_authors])
 
-        ### resets index of dataframes to avoid redundancy after concatenation
+        # resets index of dataframes to avoid redundancy after concatenation
         df_tweets.reset_index(drop=True, inplace=True)
         df_places.reset_index(drop=True, inplace=True)
         df_authors.reset_index(drop=True, inplace=True)
@@ -362,8 +365,8 @@ class TweetDownloader:
 
         self.name = filename
 
-        ### Query parameters. See the parameters.csv to modify or see the description
-        ### of each parameter
+        # Query parameters. See the parameters.csv to modify or see the description
+        # of each parameter
         query_params = {'query': query,
                         'start_time': start_time,
                         'end_time': end_time,
@@ -373,7 +376,7 @@ class TweetDownloader:
                         'user.fields': 'id,location,name,username,public_metrics',
                         'max_results': max_tweets_page
                         }
-        ### Creates a timestamp to avoid overwriting old files
+        # Creates a timestamp to avoid overwriting old files
         self.timestamp = datetime.now().strftime('_%m%d%Y_%H%M%S.csv')
 
         # Gets tweets
@@ -428,27 +431,29 @@ class TweetDownloader:
         tgeo.create_gdf()
         tgeo.bubble_animation(time_unit)
 
-    def wordcloud(self, custom_stopwords=[], background_color='black', min_word_length=4,
+    def wordcloud(self, custom_stopwords=None, background_color='black', min_word_length=4,
                   save_wordcloud=False, save_path='', bar_plot=False, save_bar_plot=False):
+        if custom_stopwords is None:
+            custom_stopwords = []
         plt.rcParams.update({'font.size': 12})
 
         df_tweets = self.tweets_df.copy()
 
-        ## gets all text contained in tweets
+        # gets all text contained in tweets
         text = " ".join(review for review in df_tweets.text.astype(str))
         print("There are {} words in the combination of all cells in column text.".format(len(text)))
 
-        ## stopwords are the words we don't want to take into account in wordclouds or wordcounts
+        # stopwords are the words we don't want to take into account in wordclouds or wordcounts
         stopwords = set(STOPWORDS)
-        ## update this list with your desired stopwords
+        # update this list with your desired stopwords
         stopwords.update(custom_stopwords)
 
-        ## creates wordcloud using the wordcloud library, stopwords, and tweets text
+        # creates wordcloud using the wordcloud library, stopwords, and tweets text
         wordcloud = WordCloud(stopwords=stopwords, background_color=background_color,
                               collocations=False, min_word_length=min_word_length,
                               width=600, height=300).generate(text)
 
-        ## plots wordcloud
+        # plots wordcloud
         plt.figure(figsize=(15, 7))
         plt.tight_layout(pad=0)
         plt.imshow(wordcloud, interpolation='bilinear')
@@ -462,13 +467,13 @@ class TweetDownloader:
             plt.show()
 
         if bar_plot:
-            ## creates a dataframe to handle wordcount retrieved from wordcloud
+            # creates a dataframe to handle wordcount retrieved from wordcloud
             df_wordcount = pd.DataFrame(wordcloud.process_text(text).items(),
                                         columns=['word', 'freq'])
-            ## sorts word count in descending order
+            # sorts word count in descending order
             df_wordcount.sort_values('freq', ascending=False, inplace=True)
 
-            ## plots word count bar chart
+            # plots word count bar chart
             plt.figure(figsize=(40, 20))
             plt.xticks(fontsize=40)
             plt.yticks(fontsize=40)
