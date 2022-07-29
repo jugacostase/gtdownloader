@@ -7,7 +7,7 @@ import os
 import time
 import pandas as pd
 
-from .utils import *
+from ._utils.utils import *
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -277,14 +277,14 @@ class TweetDownloader:
         rep_count = 0
         total_replies = 0
 
+        filename = os.path.join(self.output_folder, self.name)
+
         for conversation_id in self.tweets_df.conversation_id:
             rep_count += 1
 
-            print('getting replies for tweet {} out of {} (total replies so far: {})'.format(rep_count,
-                                                                                             total_tweets,
-                                                                                             total_replies))
+            print(f'getting replies for tweet {rep_count} out of {total_tweets} (total replies so far:{total_replies})')
 
-            query = 'conversation_id:{}'.format(conversation_id)
+            query = f'conversation_id:{conversation_id}'
 
             # Maximum amount of tweets to retrieve. This is only the maximum and not a
             # Maximum tweets retrieved on each "page". Must be integer between 10 and 500
@@ -310,7 +310,7 @@ class TweetDownloader:
             total_replies = df_tweets_rep.shape[0]
 
         if save_final:
-            df_tweets_rep.to_csv(f'{self.name}_replies_{self.timestamp}', index=False)
+            df_tweets_rep.to_csv(f'{filename}_replies_{self.timestamp}', index=False)
 
         self.replies_df = df_tweets_rep
 

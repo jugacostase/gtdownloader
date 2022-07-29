@@ -1,15 +1,21 @@
-from downloader import TweetDownloader
+from tgdownloader.downloader import TweetDownloader
 
 if __name__ == '__main__':
 
-    downloader = TweetDownloader(name='Tests_earthquakes', credentials='credentials/twitter_keys.yaml',
-                                 output_folder='downloads')
+    tgd = TweetDownloader(name='Messi_test', credentials='../credentials/twitter_keys.yaml',
+                                 output_folder='../downloads')
 
-    downloader.get_tweets('Earthquake', lang='en', max_tweets=400,
-                          start_time='07/23/2022', end_time='07/26/2022')
+    tgd.get_tweets('Cristiano Ronaldo', lang='en', max_tweets=400,
+                          start_time='07/23/2022', end_time='07/29/2022')
 
-    #downloader.tweets_to_shp('exports')
-    #downloader.map_animation('minute')
-    #downloader.places_to_shp('exports', 'centro')
-    #downloader.wordcloud()
-    #downloader.tweets_from_csv(path='search_params/parameters.csv')
+    tgd.tweets_to_shp('../exports')
+    tgd.places_to_shp('../exports', 'centroids')
+    tgd.preview_tweet_locations()
+    tgd.interactive_map()
+    tgd.interactive_map_aggregated()
+    tgd.plot_heatmap()
+    tgd.map_animation('day')
+    tgd.wordcloud()
+
+    #tgd.wordcloud()
+    #tgd.tweets_from_csv(path='search_params/parameters.csv')

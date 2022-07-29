@@ -6,7 +6,7 @@ import geopandas as gpd
 import plotly.express as px
 import matplotlib.pyplot as plt
 
-from .utils import *
+from ._utils.utils import *
 
 
 class TweetGeoGenerator:
@@ -136,7 +136,7 @@ class TweetGeoGenerator:
         plot_gdf['lat'] = plot_gdf.geometry.y
 
         fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'name']],
-                             lat='lat', lon='lon', color="name", hover_name="name", size='likes',
+                             lat='lat', lon='lon', color="name", hover_name="text",
                              projection="natural earth")
         fig.show()
 
@@ -173,11 +173,7 @@ class TweetGeoGenerator:
 
     def bubble_animation(self, time_unit='day'):
         self.compute_centroids()
-        self.tweets_centroid
 
-        start_time = self.tweets_centroid.date.min()
-        end_time = self.tweets_centroid.date.max()
-        time_range = end_time - start_time
         plot_gdf = self.tweets_centroid.copy()
         plot_gdf['lon'] = plot_gdf.geometry.x
         plot_gdf['lat'] = plot_gdf.geometry.y
@@ -189,6 +185,7 @@ class TweetGeoGenerator:
         plot_gdf['second'] = plot_gdf.date.dt.second
         group_list_all = ['year', 'month', 'day', 'hour', 'minute', 'second']
         group_list_final = []
+
         for tunit in group_list_all:
             group_list_final.append(tunit)
             if tunit == time_unit:
@@ -196,10 +193,10 @@ class TweetGeoGenerator:
         agg_dict = {
             'country': 'first',
             'full_name': 'first',
-            'id': 'count'
+            'place_id': 'count'
         }
         plot_gdf = plot_gdf.groupby(group_list_final + ['lat', 'lon']).agg(agg_dict).reset_index()
-        plot_gdf.rename(columns={'id': 'tweet_count'}, inplace=True)
+        plot_gdf.rename(columns={'place_id': 'tweet_count'}, inplace=True)
         plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final]).dt.strftime('%m/%d/%Y %H:%M%:%S')
 
         fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
