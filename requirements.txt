@@ -2,6 +2,8 @@ pandas
 geopandas
 matplotlib
 seaborn
-wordcloud==1.8.2.2
-searchtweets-v2==1.1.1
+shapely
+wordcloud
+plotly
+searchtweets-v2
 

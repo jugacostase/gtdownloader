@@ -1,8 +1,8 @@
-from tgdownloader.downloader import TweetDownloader
+from gtdownloader import TweetDownloader
 
 if __name__ == '__main__':
 
-    tgd = TweetDownloader(name='Messi_test', credentials='../credentials/twitter_keys.yaml',
+    tgd = TweetDownloader(name='CR7_test', credentials='../credentials/twitter_keys.yaml',
                                  output_folder='../downloads')
 
     tgd.get_tweets('Cristiano Ronaldo', lang='en', max_tweets=400,
@@ -10,12 +10,13 @@ if __name__ == '__main__':
 
     tgd.tweets_to_shp('../exports')
     tgd.places_to_shp('../exports', 'centroids')
-    tgd.preview_tweet_locations()
+    #tgd.preview_tweet_locations()
     tgd.interactive_map()
-    tgd.interactive_map_aggregated()
+    tgd.interactive_map_agg()
     tgd.plot_heatmap()
     tgd.map_animation('day')
     tgd.wordcloud()
+
 
     #tgd.wordcloud()
     #tgd.tweets_from_csv(path='search_params/parameters.csv')

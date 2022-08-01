@@ -416,7 +416,7 @@ class TweetDownloader:
         tgeo.create_gdf()
         tgeo.plot_tweets_points()
 
-    def interactive_map_aggregated(self):
+    def interactive_map_agg(self):
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.plot_tweets_aggregated()

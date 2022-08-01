@@ -13,12 +13,12 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 
 # This call to setup() does all the work
 setup(
-    name="tgdownloader",
-    version="0.0.1",
+    name="gtdownloader",
+    version="0.1.0",
     description="A Python package for the simple downloading of tweets with geographical information",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://tgdownloader.readthedocs.io/",
+    url="https://gtdownloader.readthedocs.io/",
     author="Juan G Acosta",
     author_email="jgacostas@icloud.com",
     license="MIT",
@@ -33,7 +33,14 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent"
     ],
-    packages=["tgdownloader"],
+    packages=["gtdownloader"],
     include_package_data=True,
-    install_requires=["numpy"]
+    install_requires=["pandas",
+                      "geopandas",
+                      "matplotlib",
+                      "seaborn",
+                      "shapely",
+                      "wordcloud",
+                      "plotly",
+                      "searchtweets-v2"]
 )
