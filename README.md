@@ -31,7 +31,7 @@ search_tweets_v2:
   bearer_token:  YOUR_BEARER_TOKEN
 ```
 
-## Usage
+## Get started
 
 ```python
 from gtdownloader import TweetDownloader
@@ -49,7 +49,7 @@ gtd.get_tweets('tornado',
                )
 
 # accessing tweets data frame
-gtd.tweets_df.head()
+print(gtd.tweets_df.head())
 ```
 
 
