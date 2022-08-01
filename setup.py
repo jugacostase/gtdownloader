@@ -37,12 +37,12 @@ setup(
     ],
     packages=["gtdownloader"],
     include_package_data=True,
-    install_requires=["pandas",
-                      "geopandas",
-                      "matplotlib",
-                      "seaborn",
-                      "shapely",
-                      "wordcloud",
-                      "plotly",
-                      "searchtweets-v2"]
+    install_requires=["pandas>=1.3.2",
+                      "geopandas>=0.10.2",
+                      "matplotlib>=3.4.3",
+                      "seaborn>=0.11.2",
+                      "Shapely>=1.8.0",
+                      "wordcloud>=1.8.2.2",
+                      "plotly>=5.5.0",
+                      "searchtweets-v2>=1.1.1"]
 )
