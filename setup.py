@@ -14,7 +14,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 # This call to setup() does all the work
 setup(
     name="gtdownloader",
-    version="0.1.0",
+    version="0.0.1",
     description="A Python package for the simple downloading of tweets with geographical information",
     long_description="GTdownloader is a geographical tweets downloading tool that leverages the Twitter \
                       API and searchtweets-v2 to retrieve tweets with geographical information and store \
@@ -35,13 +35,13 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent"
     ],
-    packages=["gtdownloader"],
+    packages=["gtdownloader", "gtdownloader/_utils"],
     include_package_data=True,
     install_requires=["pandas>=1.3.2",
                       "geopandas>=0.10.2",
                       "matplotlib>=3.4.3",
                       "seaborn>=0.11.2",
-                      "Shapely>=1.8.0",
+                      "shapely>=1.8.0",
                       "wordcloud>=1.8.2.2",
                       "plotly>=5.5.0",
                       "searchtweets-v2>=1.1.1"]
