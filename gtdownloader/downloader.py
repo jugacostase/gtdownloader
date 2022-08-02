@@ -17,7 +17,6 @@ from .geomethods import TweetGeoGenerator
 
 from wordcloud import WordCloud, STOPWORDS
 
-os.chdir(os.path.dirname(__file__))
 
 
 class TweetDownloader:
