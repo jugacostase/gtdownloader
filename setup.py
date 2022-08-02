@@ -16,9 +16,7 @@ setup(
     name="gtdownloader",
     version="0.1.9",
     description="A Python package for the simple downloading of tweets with geographical information",
-    long_description="GTdownloader is a geographical tweets downloading tool that leverages the Twitter \
-                      API and searchtweets-v2 to retrieve tweets with geographical information and store \
-                      them in easy access formats like .csv and .shp.",
+    long_description= long_description,
     long_description_content_type="text/markdown",
     url="https://gtdownloader.readthedocs.io/",
     author="Juan G Acosta",
