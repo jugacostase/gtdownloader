@@ -15,8 +15,7 @@ pip install gtdownloader
 ## Twitter keys
 To set up your twitter keys file you need to have a developer  account with access to the full-archive 
 search. If you plan to use this as part of academic research, you can apply for researcher
-access to the API at 
-[Twitter Academic Research access.](https://developer.twitter.com/en/products/twitter-api/academic-research/application-info)
+access to the API at [Twitter Academic Research access.](https://developer.twitter.com/en/products/twitter-api/academic-research/application-info)
 
 After loging into your developer account, copy the consumer key, the consumer secret and the bearer token into a .yaml
 file in the following way:
