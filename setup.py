@@ -14,7 +14,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 # This call to setup() does all the work
 setup(
     name="gtdownloader",
-    version="0.1.9",
+    version="0.1.11",
     description="A Python package for the simple downloading of tweets with geographical information",
     long_description= long_description,
     long_description_content_type="text/markdown",
