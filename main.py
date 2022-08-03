@@ -2,21 +2,22 @@ from gtdownloader import TweetDownloader
 
 if __name__ == '__main__':
 
-    tgd = TweetDownloader(name='CR7_test', credentials='../credentials/twitter_keys.yaml',
-                                 output_folder='../downloads')
+    gtd = TweetDownloader(
+        name='Tennis_players_project',
+        credentials='credentials/twitter_keys.yaml',
+        output_folder='downloads'
+    )
 
-    tgd.get_tweets('Cristiano Ronaldo', lang='en', max_tweets=400,
-                          start_time='07/23/2022', end_time='07/29/2022')
+    gtd.tweets_from_csv('parameters/parameters.csv')
+    # accessing tweets data frame
+    gtd.tweets_df.head()
 
-    tgd.tweets_to_shp('../exports')
-    tgd.places_to_shp('../exports', 'centroids')
-    #tgd.preview_tweet_locations()
-    tgd.interactive_map()
-    tgd.interactive_map_agg()
-    tgd.plot_heatmap()
-    tgd.map_animation('day')
-    tgd.wordcloud()
+    # between the dates 07/23/2022 and 07/29/2022
+'''    gtd.get_tweets(
+        query='(Nadal) OR (Rafael Nadal)',
+        lang='en',
+        start_time='07/06/2022',
+        end_time='07/07/2022',
+        max_tweets=1000
+    )'''
 
-
-    #tgd.wordcloud()
-    #tgd.tweets_from_csv(path='search_params/parameters.csv')
