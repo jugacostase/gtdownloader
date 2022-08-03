@@ -46,7 +46,7 @@ gtd.get_tweets('tornado',
                )
 
 # accessing tweets data frame
-print(gtd.tweets_df.head())
+gtd.tweets_df.head()
 ```
 
 

@@ -1,0 +1,29 @@
+site_name: GTdownloader
+site_url: https://example.com/
+
+nav:
+    - Getting started: start.md
+    - User guide:
+        - API keys: credentials.md
+        - Downloading tweets: download.md
+        - Exports: export.md
+        - Plotting: plot.md
+    - About: about.md
+    - Reference: reference.md
+
+theme: readthedocs
+
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+        python:
+            selection:
+                docstring_style: numpy
+            rendering:
+                docstring_section_style: table
+                heading_level: 2
+                show_root_heading: true
+                show_submodules: false
+
+
