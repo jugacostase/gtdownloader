@@ -230,6 +230,8 @@ class TweetDownloader:
 
         filename = os.path.join(self.output_folder, self.name)
 
+        print(f'Tweets download done. A total of {self.tweets_df.shape[0]} tweets were retrieved.')
+
         if save_final:
             self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
             # Creates date column in date format
@@ -272,13 +274,13 @@ class TweetDownloader:
 
         print('Downloading replies... this might take some time')
 
-        total_tweets = self.tweets_df.shape[0]
+        total_tweets = self.tweets_df.query('replies>0').shape[0]
         rep_count = 0
         total_replies = 0
 
         filename = os.path.join(self.output_folder, self.name)
 
-        for conversation_id in self.tweets_df.conversation_id:
+        for conversation_id in self.tweets_df.query('replies>0').conversation_id:
             rep_count += 1
 
             print(f'getting replies for tweet {rep_count} out of {total_tweets} (total replies so far:{total_replies})')
@@ -308,10 +310,16 @@ class TweetDownloader:
 
             total_replies = df_tweets_rep.shape[0]
 
+            if total_replies >= max_replies:
+                break
+                print('The desired maximum amount of replies was reached.')
+
         if save_final:
             df_tweets_rep.to_csv(f'{filename}_replies_{self.timestamp}', index=False)
 
         self.replies_df = df_tweets_rep
+
+        print(f'Replies download done. {total_replies} reply tweets were downloaded')
 
         return df_tweets_rep
 
@@ -361,8 +369,24 @@ class TweetDownloader:
         plot_wordcloud = df_param.query('parameter=="wordcloud"')['value'].item()
         plot_barplot = df_param.query('parameter=="barplot"')['value'].item()
         custom_stopwords = df_param.query('parameter=="stopwords"')['value'].item()
+        lang = df_param.query('parameter=="language"')['value'].item()
+        place = df_param.query('parameter=="place"')['value'].item()
+        include_retweets = df_param.query('parameter=="include_retweets"')['value'].item()
+        has_geo = df_param.query('parameter=="only_georreferenced"')['value'].item()
 
         self.name = filename
+
+        if pd.isna(place): place = None
+        if pd.isna(lang): lang = None
+
+        if not pd.isna(lang):
+            query += f' (lang:{lang})'
+        if not pd.isna(place):
+            query += f' (place_country:{place})'
+        if has_geo == 'yes':
+            query += ' (has:geo)'
+        if include_retweets != 'yes':
+            query += ' (-is:retweet)'
 
         # Query parameters. See the parameters.csv to modify or see the description
         # of each parameter

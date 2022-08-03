@@ -70,7 +70,6 @@ class TweetGeoGenerator:
         self.places_bbox.rename(columns={'id': 'place_id'}, inplace=True)
 
     def save_tweets_shp(self, save_path='', geo_type='centroids'):
-        os.chdir(os.path.dirname(__file__))
         self.tweets_df.rename(columns={'id': 'tweet_id'}, inplace=True)
         if geo_type == 'centroids':
             self.compute_centroids()
