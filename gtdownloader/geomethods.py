@@ -125,6 +125,7 @@ class TweetGeoGenerator:
         base = world.plot(color='white', edgecolor='black')
         self.compute_centroids()
         self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
+        plt.savefig('simple_map.pdf')
         plt.show()
 
     def plot_tweets_points(self):
@@ -137,6 +138,7 @@ class TweetGeoGenerator:
         fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'name']],
                              lat='lat', lon='lon', color="name", hover_name="text",
                              projection="natural earth")
+        fig.write_html("points.html")
         fig.show()
 
     def plot_tweets_aggregated(self):
@@ -153,6 +155,7 @@ class TweetGeoGenerator:
         fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'tweet_count', 'name']],
                              lat='lat', lon='lon', color="name", hover_name="name", size='tweet_count',
                              projection="natural earth")
+        fig.write_html("bubble_agg.html")
         fig.show()
 
     def plot_tweets_heatmap(self, radius=20):
@@ -168,6 +171,7 @@ class TweetGeoGenerator:
         fig = px.density_mapbox(plot_gdf, lat='lat', lon='lon', z='tweet_count', radius=radius,
                                 center=dict(lat=0, lon=180), zoom=0,
                                 mapbox_style="stamen-terrain")
+        fig.write_html("heatmap.html")
         fig.show()
 
     def bubble_animation(self, time_unit='day'):
@@ -204,4 +208,5 @@ class TweetGeoGenerator:
                              projection="natural earth")
 
         fig.layout.update(showlegend=False)
+        fig.write_html("animation.html")
         fig.show()

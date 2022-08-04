@@ -435,14 +435,18 @@ class TweetDownloader:
         tgeo.simple_tweets_map()
 
     def interactive_map(self):
+        print('Generating map...')
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.plot_tweets_points()
+        print('Done. Map will be displayed in browser')
 
     def interactive_map_agg(self):
+        print('Generating map...')
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.plot_tweets_aggregated()
+        print('Done. Map will be displayed in browser')
 
     def plot_heatmap(self, radius=20):
         tgeo = TweetGeoGenerator(self)
@@ -450,9 +454,11 @@ class TweetDownloader:
         tgeo.plot_tweets_heatmap(radius)
 
     def map_animation(self, time_unit):
+        print('Generating map animation...')
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.bubble_animation(time_unit)
+        print('Done. Animation will be displayed in browser')
 
     def wordcloud(self, custom_stopwords=None, background_color='black', min_word_length=4,
                   save_wordcloud=False, save_path='', bar_plot=False, save_bar_plot=False):

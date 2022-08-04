@@ -4,12 +4,12 @@ site_url: https://example.com/
 nav:
     - Getting started: start.md
     - User guide:
-        - API keys: credentials.md
-        - Downloading tweets: download.md
-        - Exports: export.md
-        - Plotting: plot.md
-    - About: about.md
-    - Reference: reference.md
+        - API keys: sections/credentials.md
+        - Downloading tweets: sections/download.md
+        - Exports: sections/export.md
+        - Plotting: sections/plot.md
+    - About: sections/about.md
+    - Reference: sections/reference.md
 
 theme: readthedocs
 
