@@ -22,20 +22,19 @@ from gtdownloader import TweetDownloader
 gtd = TweetDownloader(name='Tennis_players_project', credentials='twitter_keys.yaml', output_folder='Tennis_project_downloads')
 ```
 
-Once the function is initialized, you can call the get_tweets() method by passing a string you want to look up in Twitter and any additional parameter you want. Here we specify a language, country, and a date range defined by start_time and end_time.
-Here we want to see what Americans were saying about Rafael Nadal during the 6th and 7th of July of 2022, right after he beated Taylor Fritz at Wimbledon. Notice we set a maximum amount of downloaded tweets of 1000, although there is no guarantee that amount is going to be reached.
+Once the function is initialized, you can call the get_tweets() method by passing a string you want to look up in Twitter and any additional parameter you want. Here we specify a language and a date range defined by start_time and end_time.
+Here we want to see what people were saying about Rafael Nadal during the 6th and 7th of July of 2022, right after he beated Taylor Fritz at Wimbledon. Notice we set a maximum amount of downloaded tweets of 1000, although there is no guarantee that amount is going to be reached.
 
 ```python
 gtd.get_tweets(
                query='(Nadal) OR (Rafael Nadal)',
                lang='en',
-               place='US',
                start_time='07/06/2022',
                end_time='07/07/2022',
                max_tweets=1000            
 )
 ```
-The download will initiate by going through the Twitter API pagination with a next-page-token system. Given that Twitter API has monthly caps on the amount of tweets to download, a temp_ csv with a timestamp containing the progress per page is downloaded at each page so in case the download is interrupted there is no need to re-download already downloaded Tweets. After the download is done either when the maximum amount of tweets is reached or when there are no more tweets that satisfy the query parameters to download. 
+The download will initiate by going through the Twitter API pagination with a next-page-token system. Given that Twitter API has monthly caps on the amount of tweets to download, a temp_ csv with a timestamp containing the progress per page is downloaded at each page so in case the download is interrupted there is no need to re-download already downloaded Tweets. The download is done either when the maximum amount of tweets is reached or when there are no more tweets that satisfy the query parameters to download. 
 
 ```console
 Downloading tweets...
@@ -112,7 +111,7 @@ The resulting replies dataframe can be accessed as ```gtd.repliesdf ```. Notice 
 
 ## Search parameters in csv file
 
-Some users of this library might want to make use of it writing as little code as possible. For this cases, the function ```tweets_from_csv()``` is available.
+Some users of this library might want to make use of it by writing as little code as possible. For this cases, the function ```tweets_from_csv()``` is available.
 To use it, you need to set up a table in a csv containing the following information. *** Please keep the row names as indicated. The description column is not needed ***:
 
 |    | parameter           | value                     | description                                                                                                                                                                                                                                                                   |
