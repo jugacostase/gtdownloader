@@ -2,7 +2,7 @@ site_name: GTdownloader
 site_url: https://example.com/
 
 nav:
-    - Getting started: start.md
+    - Getting started: sections/start.md
     - User guide:
         - API keys: sections/credentials.md
         - Downloading tweets: sections/download.md
