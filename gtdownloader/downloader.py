@@ -461,10 +461,13 @@ class TweetDownloader:
         print('Done. Animation will be displayed in browser')
 
     def wordcloud(self, custom_stopwords=None, background_color='black', min_word_length=4,
-                  save_wordcloud=False, save_path='', bar_plot=False, save_bar_plot=False):
+                  save_wordcloud=True, bar_plot=False, save_bar_plot=False):
         if custom_stopwords is None:
             custom_stopwords = []
         plt.rcParams.update({'font.size': 12})
+
+        #custom_stopwords.append('http')
+        #custom_stopwords.append('https')
 
         df_tweets = self.tweets_df.copy()
 
@@ -490,8 +493,8 @@ class TweetDownloader:
         ax.axes.xaxis.set_visible(False)
         ax.axes.yaxis.set_visible(False)
         if save_wordcloud:
-            plt.savefig(os.path.join(save_path, f'{self.name}_wordcloud.png'))
-            print('Wordcloud saved at', os.path.join(save_path, f'{self.name}_wordcloud.png'))
+            plt.savefig(os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
+            print('Wordcloud saved at', os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
         else:
             plt.show()
 
@@ -508,11 +511,13 @@ class TweetDownloader:
             plt.yticks(fontsize=40)
             plt.xlabel("freq", fontsize=50)
             plt.ylabel("word", fontsize=50)
+            plt.savefig(os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
+
             if save_bar_plot:
                 sns.barplot(df_wordcount.freq[:20],
-                            df_wordcount.word[:20]).get_figure().savefig(os.path.join(save_path,
+                            df_wordcount.word[:20]).get_figure().savefig(os.path.join(self.output_folder,
                                                                                       f'{self.name}_barplot.png'))
-                print('Barplot saved at', os.path.join(save_path, f'{self.name}_barplot.png'))
+                print('Barplot saved at', os.path.join(self.output_folder, f'{self.name}_barplot.png'))
             else:
                 sns.barplot(df_wordcount.freq[:20],
                             df_wordcount.word[:20]).get_figure()

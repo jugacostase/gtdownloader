@@ -62,6 +62,7 @@ class TweetGeoGenerator:
         self.tweets_bbox = None
         self.places_bbox = None
         self.authors_bbox = None
+        self.output_folder = downloader.output_folder
 
     def create_gdf(self):
         # Create Polygon from bboxes in the places dataframe before creating geodataframe
@@ -125,7 +126,8 @@ class TweetGeoGenerator:
         base = world.plot(color='white', edgecolor='black')
         self.compute_centroids()
         self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
-        plt.savefig('simple_map.pdf')
+        plot_filename = os.path.join(self.output_folder, self.filename + '_simple_map.png')
+        plt.savefig(plot_filename)
         plt.show()
 
     def plot_tweets_points(self):
@@ -135,10 +137,26 @@ class TweetGeoGenerator:
         plot_gdf['lon'] = plot_gdf.geometry.x
         plot_gdf['lat'] = plot_gdf.geometry.y
 
-        fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'name']],
-                             lat='lat', lon='lon', color="name", hover_name="text",
+        plot_gdf.sort_values('likes', ascending=False, inplace=True)
+        agg_dict = {
+            'country': 'first',
+            'full_name': 'first',
+            'place_id': 'count',
+            'text': 'first',
+            'date': 'first',
+            'likes': 'first',
+            'name': 'first'
+        }
+
+        plot_gdf = plot_gdf.groupby(['lat', 'lon']).agg(agg_dict).reset_index()
+        plot_gdf.rename(columns={'name': 'place'}, inplace=True)
+
+        fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'likes', 'place']],
+                             lat='lat', lon='lon', color="place", hover_name="text",
                              projection="natural earth")
-        fig.write_html("points.html")
+        fig.layout.update(showlegend=False)
+        plot_filename = os.path.join(self.output_folder, self.filename + '_tweet_points.html')
+        fig.write_html(plot_filename)
         fig.show()
 
     def plot_tweets_aggregated(self):
@@ -155,7 +173,9 @@ class TweetGeoGenerator:
         fig = px.scatter_geo(plot_gdf[['lat', 'lon', 'text', 'date', 'tweet_count', 'name']],
                              lat='lat', lon='lon', color="name", hover_name="name", size='tweet_count',
                              projection="natural earth")
-        fig.write_html("bubble_agg.html")
+        fig.layout.update(showlegend=False)
+        plot_filename = os.path.join(self.output_folder, self.filename + '_tweet_points_aggr.html')
+        fig.write_html(plot_filename)
         fig.show()
 
     def plot_tweets_heatmap(self, radius=20):
@@ -171,7 +191,8 @@ class TweetGeoGenerator:
         fig = px.density_mapbox(plot_gdf, lat='lat', lon='lon', z='tweet_count', radius=radius,
                                 center=dict(lat=0, lon=180), zoom=0,
                                 mapbox_style="stamen-terrain")
-        fig.write_html("heatmap.html")
+        plot_filename = os.path.join(self.output_folder, self.filename + '_heatmap.html')
+        fig.write_html(plot_filename)
         fig.show()
 
     def bubble_animation(self, time_unit='day'):
@@ -200,13 +221,29 @@ class TweetGeoGenerator:
         }
         plot_gdf = plot_gdf.groupby(group_list_final + ['lat', 'lon']).agg(agg_dict).reset_index()
         plot_gdf.rename(columns={'place_id': 'tweet_count'}, inplace=True)
-        plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final]).dt.strftime('%m/%d/%Y %H:%M%:%S')
 
-        fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
-                             hover_name="full_name", size='tweet_count',
-                             animation_frame='time',
-                             projection="natural earth")
+        if 'day' in group_list_final:
+            plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final]).dt.strftime('%m/%d/%Y %H:%M%:%S')
+
+            fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
+                                 hover_name="full_name", size='tweet_count',
+                                 animation_frame='time',
+                                 projection="natural earth")
+        elif 'month' in group_list_final:
+            plot_gdf['day'] = '1'
+            plot_gdf['time'] = pd.to_datetime(plot_gdf[group_list_final+['day']]).dt.strftime('%m/%d/%Y %H:%M%:%S')
+
+            fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
+                                 hover_name="full_name", size='tweet_count',
+                                 animation_frame='time',
+                                 projection="natural earth")
+        else:
+            fig = px.scatter_geo(plot_gdf, lat='lat', lon='lon', color="full_name",
+                                 hover_name="full_name", size='tweet_count',
+                                 animation_frame='year',
+                                 projection="natural earth")
 
         fig.layout.update(showlegend=False)
-        fig.write_html("animation.html")
+        plot_filename = os.path.join(self.output_folder, self.filename + '_map_animation.html')
+        fig.write_html(plot_filename)
         fig.show()
