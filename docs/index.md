@@ -4,7 +4,7 @@ GTdownloader is a geographical tweets downloading tool that leverages the [Twitt
 and [searchtweets-v2](https://pypi.org/project/searchtweets-v2/) to retrieve tweets with geographical information and store them in easy access 
 formats like .csv and .shp.
 
-###### Hover to see What people were saying about *bike commuting* between 2019 and 2021
+###### Hover to see what people were saying about *bike commuting* between 2019 and 2021
 
 <html>
 <head><meta charset="utf-8" /></head>
