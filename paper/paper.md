@@ -25,7 +25,7 @@ aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
 aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
-# Summary
+# Statement of need
 
 Obtaining data from social media is one of the tools researchers use to gain insights
 on people's perception or preferences on a specific topic. Even though getting a
@@ -36,44 +36,53 @@ to spread ideas, plans, and proposals. To make this data available to researcher
 developed its own API, which also offers free access for academic research. However, 
 dealing with authentication, API calls, and data response handling can be overwhelming
 for researchers that have little to none experience in coding but still could highly benefit
-from the nature of this data. For this reason we have developed a high level package that
-offers easy access to the full-archive-search Twitter API endpoint and compiles the 
-retrieved data in standard formats for its further manipulation and analysis.
-
-
-# Statement of need
-
-`GTdownloader` is a Python package intended to ease the download of georeferenced
-tweets from Twitter for research purposes. In addition to offering user-friendly
-interaction with the Twitter API, the central `TweetDownloader` class offers 
-methods to visualize the data in interactive formats by leveraging the `Plotly`,
-`Matplotlib`, and `wordlcoud` libraries, as shown in Figure ***9999***. There are
-currently other great Python based interfaces to retrieve data from Twitter, but
+from the nature of this data. For this reason we have developed `GTdownloader`, a high level 
+package that offers easy access to the full-archive-search Twitter API endpoint and compiles the 
+retrieved data in standard formats for its further manipulation and analysis. Although there are
+currently other great Python based interfaces to retrieve data from Twitter, 
 we identified that none of them offer a simple approach for little experienced or
 first time programmers. The closest package identified in our search is `TTLocVis`,
 which also offers geographical data pre-visualization, but it is mostly for static
 visualizations and focuses mainly in topic modelling, which is out of the 
-`GTdownloader` domain.
+`GTdownloader` scope.
 
 
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+# Summary
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+The `GTdownloader` `TweetDownloader` class offers  methods to download and visualize the 
+data in interactive formats by leveraging the `Plotly`, `Matplotlib`, and `Wordlcoud` libraries. 
+The query parameters available from the Twitter API can be passed as arguments of the downloading
+method `get_tweets()`. This reduces the chance of ambiguity, specially for first time users that 
+might not be familiar with the boolean operators within Twitter queries. One of the key features 
+targeted to one-time or inexperienced users is the `tweets_from_csv()` method that reads all the 
+query parameters from a parameters table stored in csv format. This functionality allows to make use
+of the API by writing just one single command line to run the script. 
+
+Once a download is carried out, the data can be exported in shapefile format to be used as needed.
+In addition to exporting the data, preliminary visualization methods are available to gain 
+insights on the downloaded data.
+
+### Static visualization
+
+After downloading the tweets, you can quickly preview the centroids of the tweets by calling 
+the `preview_tweet_locations()` method:
+![image](figures/bike_simple_map.png)
+
+### Interactive maps
+The interactive map displays a map in which tweet data such as text and location are displayed
+upon hovering. Panning, zooming in and out, and snap shot saving are available n the animation. 
+![image](figures/interactive.png)
+
+### Time animation
+The time animation method allows to choose from a time unit to visualize the evolution of the amount
+of tweets aggregated per location in time. This is an quick way to see if the downloaded data displays
+the expected temporal behavior before working on the actual dataset in detail. 
+
+### Wordcloud
+Notice we make use of the custom_stopwords parameter to exclude the query words and the http and
+https tags that may arise from url posting.
+![image](figures/wordcloud_white.png)
+
 
 
 
