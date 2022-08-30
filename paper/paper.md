@@ -19,7 +19,7 @@ affiliations:
     index: 1
   - name: Complex and Sustainable Urban Networks (CSUN) Laboratory, University of Illinois at Chicago, USA
     index: 2
-date: 08 August 2022
+date: 30 August 2022
 bibliography: paper.bib
 
 aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
@@ -40,6 +40,7 @@ Once a download is completed, the data can be exported in shapefile format to be
 ### Static visualization
 
 After downloading the tweets, one can quickly preview the centroids of the tweets by calling the `preview_tweet_locations()` method:
+
 ![image](figures/bike_simple_map.png)
 
 ### Interactive maps
@@ -52,25 +53,12 @@ The time animation method allows the selection of a time unit to visualize the e
 
 ### Wordcloud
 Note that we make use of the custom_stopwords parameter to exclude the query words and the http and https tags that may arise from url posting.
-![image](figures/wordcloud_white.png)
+
+![Wordcloud generated from tweets about cycling during the pandemic.\label{fig:wordcloud}](figures/wordcloud_white.png)
 
 
 
-# Citations
 
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-# Figures
 
 Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
