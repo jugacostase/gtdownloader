@@ -2,9 +2,9 @@
 title: 'GTdownloader: A Python package to download, visualize, and export georeferenced tweets'
 tags:
   - Python
-  - data science
+  - Data Science
   - GIS
-  - sentiment analysis
+  - Sentiment Analysis
 authors:
   - name: Juan G. Acosta-Sequeda
     orcid: 0000-0002-2940-1874
@@ -45,7 +45,7 @@ After downloading the tweets, one can quickly preview the centroids of the tweet
 ### Interactive maps
 The interactive map displays a map in which tweet data such as text and location are displayed upon hovering. Panning, zooming in and out, and snap shot saving are available in the animation.
 
-![image](figures/interactive.png)
+![image](figures/interactive.PNG)
 
 ### Time animation
 The time animation method allows the selection of a time unit to visualize the evolution of the number of tweets aggregated per location in time. This is an quick way to see if the downloaded data displays the expected temporal behavior before working on the actual dataset in detail. 
