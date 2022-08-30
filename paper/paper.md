@@ -7,10 +7,11 @@ tags:
   - sentiment analysis
 authors:
   - name: Juan G. Acosta-Sequeda
+    orcid: 0000-0002-2940-1874
     equal-contrib: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Sybil Derrible
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0002-2939-6016
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 2
 affiliations:
@@ -29,21 +30,21 @@ aas-journal: Astrophysical Journal <- The name of the AAS journal.
 
 Obtaining data from social media is one of the tools researchers use to gain insights
 on people's perception or preferences on a specific topic. Even though getting a
-representative sample is often very difficult or impossible, the text data available
+representative sample is often difficult or impossible, the text data available
 in platforms like Twitter are an important asset in research, especially given that 
 other researchers, politicians, and renowned organizations usually use this platform 
 to spread ideas, plans, and proposals. To make this data available to researchers, Twitter
 developed its own API, which also offers free access for academic research. However, 
 dealing with authentication, API calls, and data response handling can be overwhelming
 for researchers that have little to none experience in coding but still could highly benefit
-from the nature of this data. For this reason we have developed `GTdownloader`, a high level 
+from the nature of this data. For this reason, we have developed `GTdownloader`, a high level 
 package that offers easy access to the full-archive-search Twitter API endpoint and compiles the 
 retrieved data in standard formats for its further manipulation and analysis. Although there are
-currently other great Python based interfaces to retrieve data from Twitter, 
+currently other great interfaces to retrieve data from Twitter, such as 
 we identified that none of them offer a simple approach for little experienced or
-first time programmers. The closest package identified in our search is `TTLocVis`,
+first time programmers. The closest package identified in our search is `TTLocVis` [@Kant2020],
 which also offers geographical data pre-visualization, but it is mostly for static
-visualizations and focuses mainly in topic modelling, which is out of the 
+visualizations and focuses mainly on topic modelling, which is out of the 
 `GTdownloader` scope.
 
 
