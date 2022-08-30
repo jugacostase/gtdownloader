@@ -54,22 +54,10 @@ The time animation method allows the selection of a time unit to visualize the e
 ### Wordcloud
 Note that we make use of the custom_stopwords parameter to exclude the query words and the http and https tags that may arise from url posting.
 
-![Wordcloud generated from tweets about cycling during the pandemic.\label{fig:wordcloud}](figures/wordcloud_white.png)
+![Wordcloud generated from tweets about cycling during the pandemic.\label{fig:wordcloud}](figures/wordcloud_white.png){ width=10% }
 
+# Ongoing work 
 
-
-
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
-
-# Acknowledgements
-
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+This library is currently being used by the CSUN lab 
 
 # References
