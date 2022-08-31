@@ -92,7 +92,7 @@ conducting exhaustive analysis on the data.
 Note that we make use of the custom_stopwords parameter to exclude the query words and the http and https tags 
 that may arise from url posting.
 
-![Wordcloud generated from tweets about cycling during the COVID-19 pandemic.\label{fig:wordcloud}](figures/wordcloud_white.png){ width=10% }
+![Wordcloud generated from tweets about cycling during the COVID-19 pandemic.\label{fig:wordcloud}](figures/wordcloud_white.png)
 
 # Ongoing research 
 
