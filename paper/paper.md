@@ -36,21 +36,21 @@ response handling can be overwhelming for researchers that have little to no exp
 highly benefit from the nature of this data. For this reason, we have developed `GTdownloader`, a high level package 
 that offers easy access to the full-archive-search Twitter API endpoint and compiles the retrieved data in standard 
 formats so they can more easily be further manipulated and analyzed. Although other interfaces exist to retrieve data 
-from Twitter ([@Barrie2021], [@Kearney2019]. [@stojanovski2014]), we identified that none of them offer a simple approach for less experienced or first time programmers. 
-The closest package identified in our search is `TTLocVis` [@Kant2020], which also offers geographical data 
-pre-visualization; however, it offers mostly for static visualizations and it focuses mainly on topic modeling, which 
-is out of the `GTdownloader` scope.
+from Twitter ([@Barrie2021], [@Kearney2019]. [@stojanovski2014]), we identified that none of them offer a simple 
+approach for less experienced or first time programmers.  The closest package identified in our search is `TTLocVis` 
+[@Kant2020], which also offers geographical data  pre-visualization; however, it offers mostly for static 
+visualizations and it focuses mainly on topic modeling, which  is out of the `GTdownloader` scope.
 
 
 # Summary
 
 The `GTdownloader` `TweetDownloader` class offers  methods to download and visualize the data interactively by 
-leveraging the `Plotly` [@plotly], `Matplotlib` [@Hunter:2007], and `Wordlcoud` [@WordCloud] libraries. The query parameters available from the Twitter API 
-can be passed as arguments of the downloading method `get_tweets()`. This reduces the chance of ambiguity, specially 
-for first time users who may not be familiar with boolean operators within Twitter queries. One of the key features 
-catered for less experienced users is the `tweets_from_csv()` method that reads all the query parameters from a table 
-of parameters stored in csv format. This functionality enables the use of the API by writing just one single command 
-line to run the script. 
+leveraging the `Plotly` [@plotly], `Matplotlib` [@Hunter:2007], and `Wordlcoud` [@WordCloud] libraries. 
+The query parameters available from the Twitter API can be passed as arguments of the downloading method `get_tweets()`. 
+This reduces the chance of ambiguity, specially  for first time users who may not be familiar with boolean operators 
+within Twitter queries. One of the key features  catered for less experienced users is the `tweets_from_csv()` method 
+that reads all the query parameters from a table  of parameters stored in csv format. This functionality enables the 
+use of the API by writing just one single command line to run the script. 
 
 Once a download is completed, the data can be exported in shapefile format to be used as needed. In addition to 
 exporting the data, preliminary visualization methods are available to gain insights on the downloaded data.

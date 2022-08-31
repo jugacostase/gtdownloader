@@ -194,7 +194,38 @@ class TweetDownloader:
                    end_time=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
                    lang=None, include_retweets=False, place=None,
                    max_tweets=10, max_page=500, save_temp=True, save_final=True,
-                   save_replies=False, include_replies=False, max_replies=10, temp_replies=True, ):
+                   save_replies=False, include_replies=False, max_replies=10, temp_replies=True):
+        """
+        Parameters
+        ----------
+        query : str
+            Words to be searched in tweets. Twitter API query operators supported.
+        start_time : str
+            Lower bound of  time frame in which tweets are going to be searched in date-time format (default is current date and time minus 24 hours)
+        end_time : str
+            Upper bound of time frame in which tweets are going to be searched in date-time format (default is current date and time time)
+        lang : str, optional
+            Two letter code for language to be imposed in retrieved tweets
+        include_retweets : bool
+            Whether to include tweets that are just a retweet of a previous one (default is False)
+        place : str, optional
+            Two letter code for country or place in which the search is going to be constraint
+        max_tweets : int
+            The maximum amount of tweets to retrieve in total (default is 10)
+        max_page : int
+            The maximum amount of tweets allowed per tweets page (default is 500)
+        save_temp : bool
+            Whether to save current progress (default is True)
+        save_final : bool
+            Whether to save final tweets dataframe after download is over (default is True)
+        save_replies : bool
+            Whether to include the replies to the downoaded tweets (default is false)
+        max_replies : bool
+            Maximum amount of replies per tweet if replies are allowed (default is 10)
+        temp_replies : bool
+            Whether to save progress while downloading replies if these are allowed (default is True)
+        """
+
 
         # Query parameters
         has_geo = True  # This could be introduced as func parameter in a future version
@@ -269,6 +300,16 @@ class TweetDownloader:
         #    return self.tweets_df, self.places_df, self.authors_df,
 
     def get_replies(self, max_replies=10, save_temp=True, save_final=True):
+        """
+        Parameters
+        ----------
+        max_replies : int
+            Maximum number of replies for each tweet in the original tweets dataset (default is 10)
+        save_temp : bool
+            Whether to save progress at each page (default is True)
+        save_final : bool,
+            Whether to save final replies dataset (default is True)
+        """
 
         df_tweets_rep = pd.DataFrame()
 
@@ -356,6 +397,17 @@ class TweetDownloader:
         print('Done')
 
     def tweets_from_csv(self, path, sep=',', save_temp=True):
+        """
+        Parameters
+        ----------
+        path : str
+            The path to the csv path containing the download parameters
+        sep : str, optional
+            The separator of the csv file (default is ,)
+        save_temp : bool, optional
+            Whether to save or not progress at each downloaded page (default is True)
+        """
+
         # loading config values into a DataFrame
         df_param = pd.read_csv(path, sep=sep)
 
@@ -420,11 +472,27 @@ class TweetDownloader:
                            bar_plot=plot_barplot, save_bar_plot=True)
 
     def tweets_to_shp(self, save_path='', geo_type='centroids'):
+        """
+        Parameters
+        ----------
+        path : str
+            The path to save the exported shapefile (default is current path)
+        geo_type : {'centroids', 'bbox'}, optional
+            The type of geometry (default is centroids)
+        """
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.save_tweets_shp(save_path, geo_type)
 
     def places_to_shp(self, save_path='', geo_type='centroids'):
+        """
+        Parameters
+        ----------
+        path : str
+            The path to save the exported shapefile (default is current path)
+        geo_type : {'centroids', 'bbox'}, optional
+            The type of geometry (default is centroids)
+        """
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.save_places_shp(save_path, geo_type)
@@ -449,11 +517,23 @@ class TweetDownloader:
         print('Done. Map will be displayed in browser')
 
     def plot_heatmap(self, radius=20):
+        """
+        Parameters
+        ----------
+        radius : int
+            The radius of the heatmap plot (default is 20)
+        """
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
         tgeo.plot_tweets_heatmap(radius)
 
     def map_animation(self, time_unit):
+        """
+        Parameters
+        ----------
+        time_unit : {'second', 'minute', 'hour', 'day', 'month', 'year'}
+            Time unit to aggregate by (default is 'day')
+        """
         print('Generating map animation...')
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
@@ -462,6 +542,24 @@ class TweetDownloader:
 
     def wordcloud(self, custom_stopwords=None, background_color='black', min_word_length=4,
                   save_wordcloud=True, bar_plot=False, save_bar_plot=False):
+
+        """
+        Parameters
+        ----------
+        custom_stopwords : list
+            List of words to exclude from word cloud
+        background_color : {'black', 'white'}
+            Background color of wordcloud plot
+        min_word_length : int
+            Minimum length of strings to be considered for word cloud (default is 4)
+        save_wordcloud: bool,
+            Whether to save plot (default is True)
+        bar_plot: bool
+            Whether to display barplot with word frequency (default is False)
+        save_bar_plot:
+            Whether to save barplot (default is False)
+        """
+
         if custom_stopwords is None:
             custom_stopwords = []
         plt.rcParams.update({'font.size': 12})
