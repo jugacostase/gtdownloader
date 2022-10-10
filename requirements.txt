@@ -5,6 +5,6 @@ seaborn>=0.11.2
 shapely>=1.8.0
 wordcloud>=1.8.2.2
 plotly>=5.5.0
-searchtweets-v2>=1.1.1
+pyyaml
 
 
