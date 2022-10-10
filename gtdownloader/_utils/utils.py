@@ -1,4 +1,5 @@
 import ast
+import yaml
 import numpy as np
 from datetime import datetime
 
@@ -42,3 +43,13 @@ def extract_bbox_polygon(x):
     lat2 = x['bbox'][3]
     polygon = Polygon([(lon1, lat1), (lon1, lat2), (lon2, lat2), (lon2, lat1)])
     return polygon
+def load_credentials(keys_path):
+    with open(keys_path, "r") as stream:
+        try:
+            keys = yaml.safe_load(stream)['search_tweets_v2']
+            return keys
+        except Exception as e:
+            print(e)
+            print("ERROR: couldn't load yaml credentials file")
+
+

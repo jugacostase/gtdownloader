@@ -18,12 +18,12 @@ if __name__ == '__main__':
         lang='en',
         start_time='01/01/2019',
         end_time='12/31/2021',
-        max_tweets=2000
+        max_tweets=1000
     )
-    #gtd.map_animation(time_unit='month')
-    #gtd.interactive_map()
-    #gtd.interactive_map_agg()
-    #gtd.preview_tweet_locations()
+    gtd.map_animation(time_unit='month')
+    gtd.interactive_map()
+    gtd.interactive_map_agg()
+    gtd.preview_tweet_locations()
     gtd.wordcloud(custom_stopwords=['bike', 'commuting', 'http', 'https'], background_color='white')
     print('The End')
 

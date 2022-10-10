@@ -12,8 +12,9 @@ from ._utils.utils import *
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from searchtweets import collect_results, load_credentials
+#from searchtweets import collect_results, load_credentials
 from .geomethods import TweetGeoGenerator
+from .apicall import retrieve_tweets
 
 from wordcloud import WordCloud, STOPWORDS
 
@@ -86,9 +87,7 @@ class TweetDownloader:
         self.authors_df = None
         self.places_df = None
         self.replies_df = None
-        self.search_args = load_credentials(self.credentials,
-                                            yaml_key="search_tweets_v2",
-                                            env_overwrite=False)
+        #self.search_args = load_credentials(keys_path=self.credentials)
         self.timestamp = None
 
     def tweets_from_query(self, query_params, max_page, save_temp, max_tweets, reply_mode=False):
@@ -113,24 +112,27 @@ class TweetDownloader:
             # Collect results according to query parameters, tweets per page...
             # ... and authentication credentials
 
-            tweets_page = collect_results(query_params, max_tweets=max_page,
-                                          result_stream_args=self.search_args)
+            #tweets_page = collect_results(query_params, max_tweets=max_page,
+            #                              result_stream_args=self.search_args)
+
+            tweets_page = retrieve_tweets(query_params=query_params)
+
             if len(tweets_page) != 0:  # ensures we don't process a blank page
 
                 # Adds retrieved page of tweets to list of pages
                 list_tweet_pages.append(tweets_page)
 
                 # Adds number of retrieved tweets to tweet count
-                tweet_count += tweets_page[0]['meta']['result_count']
+                tweet_count += tweets_page['meta']['result_count']
 
-                df_page = pd.DataFrame(tweets_page[0]['data'])
-                df_page_authors = pd.DataFrame(tweets_page[0]['includes']['users'])
+                df_page = pd.DataFrame(tweets_page['data'])
+                df_page_authors = pd.DataFrame(tweets_page['includes']['users'])
 
                 df_tweets = pd.concat([df_tweets, df_page])
                 df_authors = pd.concat([df_authors, df_page_authors])
 
                 try:
-                    df_page_places = pd.DataFrame(tweets_page[0]['includes']['places'])
+                    df_page_places = pd.DataFrame(tweets_page['includes']['places'])
                     df_places = pd.concat([df_places, df_page_places])
                 except KeyError:
                     # print('No places on this page...')
@@ -165,9 +167,9 @@ class TweetDownloader:
                 try:
                     if (not reply_mode):
                         print('Ending page %s with next_token=%s. %s tweets retrieved (%s total)' % (
-                            page_count, tweets_page[0]['meta']['next_token'], tweets_page[0]['meta']['result_count'],
+                            page_count, tweets_page['meta']['next_token'], tweets_page['meta']['result_count'],
                             tweet_count))
-                    next_token = tweets_page[0]['meta']['next_token']
+                    next_token = tweets_page['meta']['next_token']
                     query_params['next_token'] = next_token
                     page_count += 1
                     time.sleep(5)
