@@ -15,7 +15,7 @@ search_tweets_v2:
 ```
 Here we saved the file as "twitter_keys.yaml". 
 
-Once you have done that, you can initialize your TweetDownloader class by passing the twitter_keys.yaml as a parameter in the cnstructor:
+Once you have done that, you can initialize your TweetDownloader class by passing the twitter_keys.yaml as a parameter in the constructor:
 
 ```python
 from gtdownloader import TweetDownloader
