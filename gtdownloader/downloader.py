@@ -115,7 +115,7 @@ class TweetDownloader:
             #tweets_page = collect_results(query_params, max_tweets=max_page,
             #                              result_stream_args=self.search_args)
 
-            tweets_page = retrieve_tweets(query_params=query_params)
+            tweets_page = retrieve_tweets(query_params=query_params, keys_path=self.credentials)
 
             if len(tweets_page) != 0:  # ensures we don't process a blank page
 

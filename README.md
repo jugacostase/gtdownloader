@@ -6,11 +6,22 @@ formats like .csv and .shp.
 
 ## Installation
 
+### pip
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install gtdownloader.
 
 ```bash
 pip install gtdownloader
 ```
+
+### conda
+
+Alternativaly, install gtdownloader from the conda-forge channel by running the following command:
+
+```bash
+conda install -c conda-forge gtdownloader
+```
+
 
 ## Twitter keys
 To set up your twitter keys file you need to have a developer  account with access to the full-archive 
