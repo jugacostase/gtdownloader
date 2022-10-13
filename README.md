@@ -16,7 +16,7 @@ pip install gtdownloader
 
 ### conda
 
-Alternativaly, install gtdownloader from the conda-forge channel by running the following command:
+Alternatively, install gtdownloader from the conda-forge channel by running the following command:
 
 ```bash
 conda install -c conda-forge gtdownloader
