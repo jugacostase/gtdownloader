@@ -23,10 +23,10 @@ To export data with its corresponding geographical information there are two mai
 
 ```python
 # exporting tweets centroids as shapefile in the downloads folder
-gtd.tweets_df.tweets_to_shp(save_path='downloads', geo_type='centroids')
+gtd.tweets_to_shp(save_path='downloads', geo_type='centroids')
 
 # exporting tweets bounding boxes as shapefile in the downloads folder
-gtd.tweets_df.tweets_to_shp(save_path='downloads', geo_type='bbox')
+gtd.tweets_to_shp(save_path='downloads', geo_type='bbox')
 
 
 ```

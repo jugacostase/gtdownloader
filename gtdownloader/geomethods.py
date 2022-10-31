@@ -72,6 +72,10 @@ class TweetGeoGenerator:
 
     def save_tweets_shp(self, save_path='', geo_type='centroids'):
         self.tweets_df.rename(columns={'id': 'tweet_id'}, inplace=True)
+        try:
+            self.tweets_df.drop(columns=['edit_history_tweet_ids'], inplace=True)
+        except:
+            pass
         if geo_type == 'centroids':
             self.compute_centroids()
             shape_filename = os.path.join(os.getcwd(), save_path, self.filename + '_tweets_centroids' + '.shp')
