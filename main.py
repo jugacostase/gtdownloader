@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     # between the dates 07/23/2022 and 07/29/2022
     gtd.get_tweets(
-        query='bike commuting',
+        query='(from:twitterdev)',
         lang='en',
         start_time='01/01/2019',
         end_time='12/31/2021',

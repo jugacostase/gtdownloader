@@ -124,8 +124,10 @@ class TweetDownloader:
 
                 # Adds number of retrieved tweets to tweet count
                 tweet_count += tweets_page['meta']['result_count']
-
-                df_page = pd.DataFrame(tweets_page['data'])
+                try:
+                    df_page = pd.DataFrame(tweets_page['data'])
+                except KeyError:
+                    continue
                 df_page_authors = pd.DataFrame(tweets_page['includes']['users'])
 
                 df_tweets = pd.concat([df_tweets, df_page])
@@ -430,8 +432,11 @@ class TweetDownloader:
 
         self.name = filename
 
+        if pd.isna(start_time): start_time = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")
+        if pd.isna(end_time): end_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         if pd.isna(place): place = None
         if pd.isna(lang): lang = None
+
 
         if not pd.isna(lang):
             query += f' (lang:{lang})'

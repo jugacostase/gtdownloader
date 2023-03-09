@@ -1,7 +1,7 @@
 # GTdownloader
 
 GTdownloader is a geographical tweets downloading tool that leverages the [Twitter API](https://developer.twitter.com/en/docs/twitter-api) 
-and [searchtweets-v2](https://pypi.org/project/searchtweets-v2/) to retrieve tweets with geographical information and store them in easy access 
+to retrieve tweets with geographical information and store them in easy access 
 formats like .csv and .shp.
 
 ## Installation
@@ -66,6 +66,8 @@ gtd.tweets_df.head()
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+[GitHub](https://github.com/jugacostase/gtdownloader)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
