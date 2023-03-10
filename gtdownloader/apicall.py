@@ -1,3 +1,4 @@
+import os
 import requests
 from ._utils.utils import load_credentials
 
@@ -12,10 +13,17 @@ def bearer_oauth(r):
     return r
 
 
-def retrieve_tweets(query_params, keys_path):
+def retrieve_tweets(query_params, keys):
     search_url = "https://api.twitter.com/2/tweets/search/all"
     global KEYS
-    KEYS = load_credentials(keys_path)
+    try:
+        KEYS = load_credentials(keys)
+    except:
+        try:
+            KEYS = {}
+            KEYS['bearer_token'] = os.environ[keys]
+        except KeyError:
+            KEYS['bearer_token'] = keys
     response = requests.request("GET", search_url, auth=bearer_oauth, params=query_params)
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)

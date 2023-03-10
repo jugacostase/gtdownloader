@@ -18,6 +18,8 @@ def get_attribute_from_dict(x, attribute_id):
         return x[attribute_id]
     except TypeError:
         return np.nan
+    except AttributeError:
+        return np.nan
 
 
 def validate_date(date_text):

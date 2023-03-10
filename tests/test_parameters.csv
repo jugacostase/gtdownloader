@@ -1,7 +1,7 @@
 ﻿parameter,value,description
 query,dog,"use single space for AND operator and use ''OR"" for the OR operator. Example= apples OR (grapes bananas). For more information and operators go to: https://developer.twitter.com/en/docs/twitter-api/tweets/search/integrate/build-a-query#build"
-start_time,,oldest possible date and time of the retrieved tweets in YYYY-MM-DDTHH:mm:ssZ format
-end_time,,the most recient possible date and time for retrieved tweets in YYYY-MM-DDTHH:mm:ssZ format
+start_time,01/01/2017,oldest possible date and time of the retrieved tweets in YYYY-MM-DDTHH:mm:ssZ format
+end_time,12/31/2022,the most recent possible date and time for retrieved tweets in YYYY-MM-DDTHH:mm:ssZ format
 max_tweets,20,total maximum amount of tweets.
 max_tweets_page,10,maximum amount of tweets per tweet page. Must be between 10 and 500
 language,,if specific language is needed

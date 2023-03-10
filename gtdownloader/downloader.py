@@ -73,11 +73,17 @@ class TweetDownloader:
         timestamp
     """
 
-    def __init__(self, credentials,
-                 name='Project_{}'.format(datetime.now().strftime('%m%d%Y_%H%M%S')),
+    def __init__(self,
+                 yaml_credentials=None,
+                 env_token=None,
+                 bearer_token=None,
+                 name=None,
                  output_folder=''):
-        self.name = name
-        self.credentials = credentials
+        if name == None:
+            self.name = 'Project_{}'.format(datetime.now().strftime('%m%d%Y_%H%M%S'))
+        else:
+            self.name = name
+        self.credentials = yaml_credentials
         self.output_folder = output_folder
         self.tweets = None
         self.authors = None
@@ -87,8 +93,10 @@ class TweetDownloader:
         self.authors_df = None
         self.places_df = None
         self.replies_df = None
-        #self.search_args = load_credentials(keys_path=self.credentials)
         self.timestamp = None
+        self.env_token = env_token
+        self.bearer_token = bearer_token
+
 
     def tweets_from_query(self, query_params, max_page, save_temp, max_tweets, reply_mode=False):
         # initializes a list to store retrieved tweet pages
@@ -115,7 +123,16 @@ class TweetDownloader:
             #tweets_page = collect_results(query_params, max_tweets=max_page,
             #                              result_stream_args=self.search_args)
 
-            tweets_page = retrieve_tweets(query_params=query_params, keys_path=self.credentials)
+            if self.credentials != None:
+                keys = self.credentials
+            elif self.env_token != None:
+                keys = self.env_token
+            elif self.bearer_token != None:
+                keys = self.bearer_token
+            else:
+                raise AttributeError('No authentication keys provided')
+
+            tweets_page = retrieve_tweets(query_params=query_params, keys=keys)
 
             if len(tweets_page) != 0:  # ensures we don't process a blank page
 
@@ -194,9 +211,9 @@ class TweetDownloader:
         return list_tweet_pages, df_tweets, df_places, df_authors
 
     def get_tweets(self, query,
-                   start_time=(datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz"),
-                   end_time=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                   lang=None, include_retweets=False, place=None,
+                   start_time=None,
+                   end_time=None,
+                   lang=None, include_retweets=False, place=None, has_geo=True,
                    max_tweets=10, max_page=500, save_temp=True, save_final=True,
                    save_replies=False, include_replies=False, max_replies=10, temp_replies=True):
         """
@@ -214,6 +231,8 @@ class TweetDownloader:
             Whether to include tweets that are just a retweet of a previous one (default is False)
         place : str, optional
             Two letter code for country or place in which the search is going to be constraint
+        has_geo : bool, optional
+            Whether to only include tweets with geographic reference (default is True)
         max_tweets : int
             The maximum amount of tweets to retrieve in total (default is 10)
         max_page : int
@@ -230,9 +249,12 @@ class TweetDownloader:
             Whether to save progress while downloading replies if these are allowed (default is True)
         """
 
+        if start_time == None:
+            start_time = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")
+        if end_time == None:
+            end_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # Query parameters
-        has_geo = True  # This could be introduced as func parameter in a future version
         query = '({})'.format(query)
         # Creates a timestamp to avoid overwriting old files
         self.timestamp = datetime.now().strftime('%m%d%Y_%H%M%S.csv')
@@ -268,7 +290,10 @@ class TweetDownloader:
         print(f'Tweets download done. A total of {self.tweets_df.shape[0]} tweets were retrieved.')
 
         if save_final:
-            self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
+            try:
+                self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
+            except AttributeError:
+                self.tweets_df['place_id'] = np.nan
             # Creates date column in date format
             self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
             self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M%:%S')
@@ -417,8 +442,8 @@ class TweetDownloader:
 
         # storing parameters into variables to be passed to the query obj
         query = df_param.query('parameter=="query"')['value'].item()
-        start_time = df_param.query('parameter=="start_time"')['value'].item()
-        end_time = df_param.query('parameter=="end_time"')['value'].item()
+        start_time = validate_date(df_param.query('parameter=="start_time"')['value'].item())
+        end_time = validate_date(df_param.query('parameter=="end_time"')['value'].item())
         max_tweets_total = int(df_param.query('parameter=="max_tweets"')['value'].item())
         max_tweets_page = int(df_param.query('parameter=="max_tweets_page"')['value'].item())
         filename = df_param.query('parameter=="filename"')['value'].item()
