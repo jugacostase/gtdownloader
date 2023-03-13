@@ -3,6 +3,8 @@ To set up your twitter keys file you need to have a developer  account with acce
 search. If you plan to use this as part of academic research, you can apply for researcher
 access to the API at [Twitter Academic Research access.](https://developer.twitter.com/en/products/twitter-api/academic-research/application-info)
 
+### YAML 
+
 After loging into your developer account, open any text editor and copy the consumer key, the consumer secret and the bearer token into a .yaml
 file in the following way:
 
@@ -20,5 +22,30 @@ Once you have done that, you can initialize your TweetDownloader class by passin
 ```python
 from gtdownloader import TweetDownloader
 
-gtd = TweetDownloader(credentials='twitter_keys.yaml')
+gtd = TweetDownloader(yaml_credentials='twitter_keys.yaml')
+```
+
+### Environment variable
+
+Instead of setting up a YAML file with credentials, you can also set your Twitter API bearer token as an environment variable and pass it to the TweetDownloader initializer:
+
+```python
+from gtdownloader import TweetDownloader
+
+gtd = TweetDownloader(env_token='TWITTER_KEY_ENV_VAR')
+```
+
+### Bearer token
+
+Even though it is not recommended, you can also pass the bearer token directly to the initializer:
+
+
+### Environment variable
+
+Instead of setting up a YAML file with credentials, you can also set your Twitter API bearer token as an environment variable and pass it to the TweetDownloader initializer:
+
+```python
+from gtdownloader import TweetDownloader
+
+gtd = TweetDownloader(bearer_token='TWITTER_BEARER_TOKEN')
 ```

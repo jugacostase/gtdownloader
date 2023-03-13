@@ -39,12 +39,15 @@ def validate_date(date_text):
 
 
 def extract_bbox_polygon(x):
-    lon1 = x['bbox'][0]
-    lat1 = x['bbox'][1]
-    lon2 = x['bbox'][2]
-    lat2 = x['bbox'][3]
-    polygon = Polygon([(lon1, lat1), (lon1, lat2), (lon2, lat2), (lon2, lat1)])
-    return polygon
+    try:
+        lon1 = x['bbox'][0]
+        lat1 = x['bbox'][1]
+        lon2 = x['bbox'][2]
+        lat2 = x['bbox'][3]
+        polygon = Polygon([(lon1, lat1), (lon1, lat2), (lon2, lat2), (lon2, lat1)])
+        return polygon
+    except:
+        return np.nan
 def load_credentials(keys_path):
     with open(keys_path, "r") as stream:
         try:

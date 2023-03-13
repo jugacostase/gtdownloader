@@ -66,11 +66,14 @@ class TweetGeoGenerator:
 
     def create_gdf(self):
         # Create Polygon from bboxes in the places dataframe before creating geodataframe
-        self.places_df['geometry'] = self.places_df['geo'].apply(extract_bbox_polygon)
+        try:
+            self.places_df['geometry'] = self.places_df['geo'].apply(extract_bbox_polygon)
+        except KeyError:
+            self.places_df['geometry'] = np.nan
         self.places_bbox = gpd.GeoDataFrame(self.places_df, crs="EPSG:4326")
         self.places_bbox.rename(columns={'id': 'place_id'}, inplace=True)
 
-    def save_tweets_shp(self, save_path='', geo_type='centroids'):
+    def get_tweets_gdf(self, geo_type='centroids'):
         self.tweets_df.rename(columns={'id': 'tweet_id'}, inplace=True)
         try:
             self.tweets_df.drop(columns=['edit_history_tweet_ids'], inplace=True)
@@ -78,7 +81,7 @@ class TweetGeoGenerator:
             pass
         if geo_type == 'centroids':
             self.compute_centroids()
-            shape_filename = os.path.join(os.getcwd(), save_path, self.filename + '_tweets_centroids' + '.shp')
+            #shape_filename = os.path.join(os.getcwd(), save_path, self.filename + '_tweets_centroids' + '.shp')
             tweets_centroid = self.tweets_centroid
             tweets_centroid['date'] = tweets_centroid.date.dt.strftime('%m/%d/%Y %H:%M%:%s')
             tweets_centroid.drop(columns=['public_metrics', 'created_at'], inplace=True)
@@ -86,34 +89,43 @@ class TweetGeoGenerator:
                                             'conversation_id': 'conv_id',
                                             'name': 'place',
                                             'full_name': 'full_place'}, inplace=True)
-            tweets_centroid.to_file(shape_filename)
-            print('Shapefile with tweet centroids saved to file:', shape_filename)
+            return tweets_centroid
+            #tweets_centroid.to_file(shape_filename)
+            #print('Shapefile with tweet centroids saved to file:', shape_filename)
         elif geo_type == 'bbox':
-            self.tweets_bbox = pd.merge(self.places_bbox, self.tweets_df, on='place_id')
-            self.tweets_bbox.drop(columns=['geo_x', 'geo_y'])
-            self.tweets_bbox.rename(columns={'id': 'place_id'}, inplace=True)
-            tweets_bbox = self.tweets_bbox
-            tweets_bbox['date'] = tweets_bbox.date.dt.strftime('%m/%d/%Y %H:%M%:%s')
-            tweets_bbox.rename(columns={'country_code': 'cntry_code',
-                                        'conversation_id': 'conv_id',
-                                        'name': 'place',
-                                        'full_name': 'full_place'}, inplace=True)
-            shape_filename = os.path.join(save_path, self.filename + '_tweets_bboxes' + '.shp')
-            tweets_bbox.to_file(shape_filename)
-            print('Shapefile with tweet bounding boxes saved to file:', shape_filename)
+            try:
+                self.tweets_bbox = pd.merge(self.places_bbox, self.tweets_df, on='place_id')
+                self.tweets_bbox.drop(columns=['geo_x', 'geo_y'])
+                self.tweets_bbox.rename(columns={'id': 'place_id'}, inplace=True)
+                tweets_bbox = self.tweets_bbox
+                tweets_bbox['date'] = tweets_bbox.date.dt.strftime('%m/%d/%Y %H:%M%:%s')
+                tweets_bbox.rename(columns={'country_code': 'cntry_code',
+                                            'conversation_id': 'conv_id',
+                                            'name': 'place',
+                                            'full_name': 'full_place'}, inplace=True)
+            except:
+                self.tweets_bbox = gpd.GeoDataFrame(self.tweets_df)
+                tweets_bbox = self.tweets_bbox
+                tweets_bbox['geometry'] = np.nan
+            return tweets_bbox
+            #shape_filename = os.path.join(save_path, self.filename + '_tweets_bboxes' + '.shp')
+            #tweets_bbox.to_file(shape_filename)
+            #print('Shapefile with tweet bounding boxes saved to file:', shape_filename)
         else:
             raise ValueError('geo_type not supported. Input either "centroids" or "bbox"')
 
-    def save_places_shp(self, save_path='', geo_type='centroids'):
+    def get_places_gdf(self, geo_type='centroids'):
         if geo_type == 'centroids':
             self.compute_centroids()
-            shape_filename = os.path.join(save_path, self.filename + '_places_centroids' + '.shp')
-            self.places_centroid.to_file(shape_filename)
-            print('Shapefile with places centroids saved to file:', shape_filename)
+            #shape_filename = os.path.join(save_path, self.filename + '_places_centroids' + '.shp')
+            return self.places_centroid
+            #self.places_centroid.to_file(shape_filename)
+            #print('Shapefile with places centroids saved to file:', shape_filename)
         elif geo_type == 'bbox':
-            shape_filename = os.path.join(save_path, self.filename + '_places_bboxes' + '.shp')
-            self.places_bbox.to_file(shape_filename)
-            print('Shapefile with places bounding boxes saved to file:', shape_filename)
+            return self.places_bbox
+            #shape_filename = os.path.join(save_path, self.filename + '_places_bboxes' + '.shp')
+            #self.places_bbox.to_file(shape_filename)
+            #print('Shapefile with places bounding boxes saved to file:', shape_filename)
         else:
             raise ValueError('geo_type not supported. Input either "centroids" or "bbox"')
 
@@ -122,8 +134,14 @@ class TweetGeoGenerator:
         self.places_centroid['geometry'] = self.places_centroid.to_crs("EPSG:3395").geometry.centroid
         self.places_centroid = self.places_centroid.to_crs("EPSG:4326")
         self.places_centroid.rename(columns={'id': 'place_id'}, inplace=True)
-        self.tweets_centroid = pd.merge(self.places_centroid, self.tweets_df, on='place_id')
-        self.tweets_centroid.drop(columns=['geo_x', 'geo_y'], inplace=True)
+        try:
+            self.tweets_centroid = pd.merge(self.places_centroid, self.tweets_df, on='place_id')
+            self.tweets_centroid.drop(columns=['geo_x', 'geo_y'], inplace=True)
+        except KeyError:
+            #self.places_centroid = gpd.GeoDataFrame(self.places_df)
+            self.tweets_centroid = gpd.GeoDataFrame(self.tweets_df)
+            self.tweets_centroid['geometry'] = np.nan
+
 
     def simple_tweets_map(self):
         world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))

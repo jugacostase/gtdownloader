@@ -3,6 +3,11 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
+import re
+
+def get_property(prop):
+    result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open('/__init__.py').read())
+    return result.group(1)
 
 # The directory containing this file
 HERE = path.abspath(path.dirname(__file__))
@@ -14,7 +19,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 # This call to setup() does all the work
 setup(
     name="gtdownloader",
-    version="0.1.19",
+    version=get_property('__version__'),
     description="A Python package for the simple downloading of tweets with geographical information",
     long_description=long_description,
     long_description_content_type="text/markdown",

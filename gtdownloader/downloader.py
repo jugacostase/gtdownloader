@@ -503,31 +503,29 @@ class TweetDownloader:
             self.wordcloud(custom_stopwords=stopwords_list, save_wordcloud=True,
                            bar_plot=plot_barplot, save_bar_plot=True)
 
-    def tweets_to_shp(self, save_path='', geo_type='centroids'):
+    def tweets_to_gdf(self, geo_type='centroids'):
         """
         Parameters
         ----------
-        path : str
-            The path to save the exported shapefile (default is current path)
         geo_type : {'centroids', 'bbox'}, optional
             The type of geometry (default is centroids)
         """
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
-        tgeo.save_tweets_shp(save_path, geo_type)
+        gdf_tweets = tgeo.get_tweets_gdf(geo_type)
+        return gdf_tweets
 
-    def places_to_shp(self, save_path='', geo_type='centroids'):
+    def places_to_gdf(self, geo_type='centroids'):
         """
         Parameters
         ----------
-        path : str
-            The path to save the exported shapefile (default is current path)
         geo_type : {'centroids', 'bbox'}, optional
             The type of geometry (default is centroids)
         """
         tgeo = TweetGeoGenerator(self)
         tgeo.create_gdf()
-        tgeo.save_places_shp(save_path, geo_type)
+        gdf_places = tgeo.get_places_gdf(geo_type)
+        return gdf_places
 
     def preview_tweet_locations(self):
         tgeo = TweetGeoGenerator(self)

@@ -135,3 +135,18 @@ After building the parameters table and saving it in a csv file, you can call th
 ```python
 gtd.tweets_from_csv('parameters.csv')
 ```
+
+## Non-georreferenced tweets
+
+Sometimes you might want to work with tweets that are not necessarily geo-tagged. It is now possible to download such tweets using the ```has_geo``` parameter in the ```get_tweets()``` method:
+
+```python
+gtd.get_tweets(
+               query='(Nadal) OR (Rafael Nadal)',
+               lang='en',
+               start_time='07/06/2022',
+               end_time='07/07/2022',
+               max_tweets=1000,
+               has_geo=False
+)
+```

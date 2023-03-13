@@ -1,22 +1,21 @@
-import time
 import os
-
+import time
 
 from gtdownloader.downloader import TweetDownloader
 
-td = TweetDownloader(env_token='TWITTER_KEY', output_folder='../exports')
+td = TweetDownloader(bearer_token='AAAAAAAAAAAAAAAAAAAAAA8cTQEAAAAA8ErByhz3ZyGH8XfuCJkGqH6eWeQ%3D2d4m6xmtnyI78jLt1nyc9IcKP4sGRThNxuCwJUBfFt6vMEGBAi', output_folder='../exports')
 
 
 def test_one_page_download_defaults():
     time.sleep(15)
-    td.get_tweets(query='dog', start_time='01/01/2017', end_time='12/31/2022')
+    td.get_tweets(query='dog')
     df_tweets = td.tweets_df
     assert df_tweets.shape[0] > 0
 
 
 def test_download_short():
     time.sleep(15)
-    td.get_tweets(query='dog', max_tweets=10)
+    td.get_tweets(query='dog', max_tweets=10, start_time='01/01/2017', end_time='12/31/2022')
     df_tweets = td.tweets_df
     assert df_tweets.shape[0] > 0
 
@@ -59,6 +58,6 @@ def test_download_no_geo():
     assert df_tweets.shape[0] > 0
 
 def test_env():
-    print(os.environ['HOME'])
+    print(os.environ['TWITTER_KEY'])
     assert True
 
