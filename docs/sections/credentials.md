@@ -39,11 +39,6 @@ gtd = TweetDownloader(env_token='TWITTER_KEY_ENV_VAR')
 
 Even though it is not recommended, you can also pass the bearer token directly to the initializer:
 
-
-### Environment variable
-
-Instead of setting up a YAML file with credentials, you can also set your Twitter API bearer token as an environment variable and pass it to the TweetDownloader initializer:
-
 ```python
 from gtdownloader import TweetDownloader
 
