@@ -10,6 +10,7 @@ nav:
         - Exports: sections/export.md
         - Plotting: sections/plot.md
     - About: sections/about.md
+    - Reference: sections/reference.md
 
 theme: readthedocs
 
