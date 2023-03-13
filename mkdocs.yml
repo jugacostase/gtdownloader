@@ -2,6 +2,7 @@ site_name: GTdownloader
 site_url: https://example.com/
 
 nav:
+    - Home: index.md
     - Getting started: sections/start.md
     - User guide:
         - API keys: sections/credentials.md
