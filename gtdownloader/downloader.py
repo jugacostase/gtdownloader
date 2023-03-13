@@ -250,9 +250,9 @@ class TweetDownloader:
         """
 
         if start_time == None:
-            start_time = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")
+            start_time = validate_date((datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz"))
         if end_time == None:
-            end_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            end_time = validate_date(datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
 
         # Query parameters
         query = '({})'.format(query)
