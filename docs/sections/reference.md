@@ -5,8 +5,6 @@
             - get_tweets
             - get_replies
             - tweets_from_csv
-            - tweets_to_gdf
-            - places_to_gdf
             - preview_tweet_locations
             - interactive_map
             - plot_heatmap
