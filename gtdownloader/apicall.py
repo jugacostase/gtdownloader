@@ -8,6 +8,7 @@ from ._utils.utils import load_credentials
 KEYS = {}
 
 def bearer_oauth(r):
+
     r.headers["Authorization"] = f"Bearer {KEYS['bearer_token']}"
     r.headers["User-Agent"] = "v2FullArchiveSearchPython"
     return r
