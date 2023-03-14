@@ -37,7 +37,7 @@ def test_download_multi_page():
     assert df_tweets.shape[0] > 0
 
 def test_download_multi_page_w_replies():
-    time.sleep(30)
+    time.sleep(120)
     td.get_tweets(query='dog', max_tweets=20, include_replies=True,
                   max_page=10, save_replies=True, temp_replies=False,
                   start_time='01/01/2017', end_time='12/31/2022', save_temp=False)
