@@ -21,7 +21,7 @@ def test_download_short():
 
 
 def test_download_w_replies():
-    time.sleep(30)
+    time.sleep(90)
     td.get_tweets(query='dog', max_tweets=20, include_replies=True,
                   max_replies=10, save_replies=False, temp_replies=False,
                   start_time='01/01/2017', end_time='12/31/2022', save_temp=False)
