@@ -297,7 +297,7 @@ class TweetDownloader:
             # Creates date column in date format
             self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
             self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M%:%S')
-            self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'])
+            self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'], utc=False, format='%m/%d/%Y %H:%M%:%S')
 
             # Get metrics as separate columns:
             self.tweets_df['likes'] = self.tweets_df.public_metrics.apply(lambda x: x['like_count'])
