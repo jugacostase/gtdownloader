@@ -366,7 +366,7 @@ class TweetDownloader:
 
             query_params = {'query': query,
                             'start_time': '2007-01-01T00:00:00z',
-                            'end_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            'end_time': validate_date((datetime.now()-timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")),
                             'expansions': 'author_id',
                             'tweet.fields': 'created_at,author_id,id,conversation_id',
                             'user.fields': 'id,name,username,public_metrics',
