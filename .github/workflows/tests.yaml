@@ -4,6 +4,9 @@ on:
   - push
   - pull_request
 
+env:
+  TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}

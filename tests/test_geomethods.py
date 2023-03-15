@@ -3,8 +3,7 @@ from gtdownloader.downloader import TweetDownloader
 
 @pytest.fixture(scope="session")
 def apicall():
-    td = TweetDownloader(
-        bearer_token='AAAAAAAAAAAAAAAAAAAAAA8cTQEAAAAA8ErByhz3ZyGH8XfuCJkGqH6eWeQ%3D2d4m6xmtnyI78jLt1nyc9IcKP4sGRThNxuCwJUBfFt6vMEGBAi')
+    td = TweetDownloader(env_token='TWITTER_BEARER_TOKEN')
     td.get_tweets(query='dog', max_tweets=10, start_time='01/01/2017', end_time='12/31/2022', has_geo=False, save_temp=False)
     return td
 

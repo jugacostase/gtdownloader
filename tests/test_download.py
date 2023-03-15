@@ -3,7 +3,7 @@ import time
 
 from gtdownloader.downloader import TweetDownloader
 
-td = TweetDownloader(bearer_token='AAAAAAAAAAAAAAAAAAAAAA8cTQEAAAAA8ErByhz3ZyGH8XfuCJkGqH6eWeQ%3D2d4m6xmtnyI78jLt1nyc9IcKP4sGRThNxuCwJUBfFt6vMEGBAi')
+td = TweetDownloader(env_token='TWITTER_BEARER_TOKEN')
 
 
 def test_one_page_download_defaults():
