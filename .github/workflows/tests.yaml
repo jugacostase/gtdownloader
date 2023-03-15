@@ -4,11 +4,11 @@ on:
   - push
   - pull_request
 
-env:
-  TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+
 
 jobs:
   test:
+    environment: CI
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,5 +26,7 @@ jobs:
           python -m pip install --upgrade pip 
           pip install tox tox-gh-actions
       - name: Test with tox
+        env:
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: tox
 
