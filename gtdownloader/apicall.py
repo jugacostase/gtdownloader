@@ -8,7 +8,6 @@ from ._utils.utils import load_credentials
 KEYS = {}
 
 def bearer_oauth(r):
-
     r.headers["Authorization"] = f"Bearer {KEYS['bearer_token']}"
     r.headers["User-Agent"] = "v2FullArchiveSearchPython"
     return r
@@ -19,9 +18,8 @@ def retrieve_tweets(query_params, keys):
     global KEYS
     try:
         KEYS = load_credentials(keys)
-    except:
+    except Exception as e:
         try:
-            KEYS = {}
             KEYS['bearer_token'] = os.environ[keys]
         except KeyError:
             KEYS['bearer_token'] = keys

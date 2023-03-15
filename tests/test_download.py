@@ -7,7 +7,7 @@ td = TweetDownloader(env_token='TWITTER_BEARER_TOKEN')
 
 
 def test_one_page_download_defaults():
-    time.sleep(30)
+    time.sleep(3)
     td.get_tweets(query='dog', save_temp=False)
     df_tweets = td.tweets_df
     assert df_tweets.shape[0] > 0
