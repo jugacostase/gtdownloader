@@ -28,7 +28,7 @@ jobs:
         run: |
           python -c 'import os;print(os.environ)'
           TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}
-          python -c 'import os;print(os.environ)'
+          python -c 'print(os.environ)'
 
 
 
