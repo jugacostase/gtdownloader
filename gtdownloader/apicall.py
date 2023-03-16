@@ -16,10 +16,6 @@ def bearer_oauth(r):
 def retrieve_tweets(query_params, keys):
     search_url = "https://api.twitter.com/2/tweets/search/all"
     global KEYS
-
-    print('ALL-ENVIRON', os.environ)
-    print(os.environ['TWITTER_BEARER_TOKEN'])
-
     try:
         KEYS = load_credentials(keys)
     except Exception as e:
