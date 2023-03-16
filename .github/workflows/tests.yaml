@@ -12,7 +12,7 @@ jobs:
       TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.9']
     steps:
       - uses: actions/checkout@v2
