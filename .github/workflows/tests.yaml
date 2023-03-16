@@ -14,7 +14,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ['3.9']
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -27,8 +26,9 @@ jobs:
           pip install tox tox-gh-actions
       - name: Test with tox
         run: |
+          python -c 'import os;print(os.environ)'
           TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}
-          tox
+          python -c 'import os;print(os.environ)'
 
 
 
