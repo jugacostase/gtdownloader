@@ -150,7 +150,7 @@ class TweetGeoGenerator:
         self.tweets_centroid.plot(ax=base, marker='o', color='red', markersize=5)
         plot_filename = os.path.join(self.output_folder, self.filename + '_simple_map.png')
         plt.savefig(plot_filename)
-        plt.show()
+        plt.show(block=False)
 
     def plot_tweets_points(self):
 
@@ -159,6 +159,7 @@ class TweetGeoGenerator:
         plot_gdf['lon'] = plot_gdf.geometry.x
         plot_gdf['lat'] = plot_gdf.geometry.y
 
+        print(plot_gdf.columns)
         plot_gdf.sort_values('likes', ascending=False, inplace=True)
         agg_dict = {
             'country': 'first',

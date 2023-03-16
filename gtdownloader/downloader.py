@@ -12,12 +12,11 @@ from ._utils.utils import *
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-#from searchtweets import collect_results, load_credentials
+# from searchtweets import collect_results, load_credentials
 from .geomethods import TweetGeoGenerator
 from .apicall import retrieve_tweets
 
 from wordcloud import WordCloud, STOPWORDS
-
 
 
 class TweetDownloader:
@@ -97,7 +96,6 @@ class TweetDownloader:
         self.env_token = env_token
         self.bearer_token = bearer_token
 
-
     def tweets_from_query(self, query_params, max_page, save_temp, max_tweets, reply_mode=False):
         # initializes a list to store retrieved tweet pages
         list_tweet_pages = []
@@ -120,7 +118,7 @@ class TweetDownloader:
             # Collect results according to query parameters, tweets per page...
             # ... and authentication credentials
 
-            #tweets_page = collect_results(query_params, max_tweets=max_page,
+            # tweets_page = collect_results(query_params, max_tweets=max_page,
             #                              result_stream_args=self.search_args)
 
             if self.credentials != None:
@@ -289,21 +287,21 @@ class TweetDownloader:
 
         print(f'Tweets download done. A total of {self.tweets_df.shape[0]} tweets were retrieved.')
 
+        try:
+            self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
+        except AttributeError:
+            self.tweets_df['place_id'] = np.nan
+        # Creates date column in date format
+        self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
+        self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M:%S')
+        self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'], utc=False, format='%m/%d/%Y %H:%M:%S')
+
+        # Get metrics as separate columns:
+        self.tweets_df['likes'] = self.tweets_df.public_metrics.apply(lambda x: x['like_count'])
+        self.tweets_df['replies'] = self.tweets_df.public_metrics.apply(lambda x: x['reply_count'])
+        self.tweets_df['retweets'] = self.tweets_df.public_metrics.apply(lambda x: x['retweet_count'])
+
         if save_final:
-            try:
-                self.tweets_df['place_id'] = self.tweets_df.geo.apply(lambda x: get_attribute_from_dict(x, 'place_id'))
-            except AttributeError:
-                self.tweets_df['place_id'] = np.nan
-            # Creates date column in date format
-            self.tweets_df['date'] = pd.to_datetime(self.tweets_df.created_at)
-            self.tweets_df['date'] = self.tweets_df.date.dt.strftime('%m/%d/%Y %H:%M:%S')
-            self.tweets_df['date'] = pd.to_datetime(self.tweets_df['date'], utc=False, format='%m/%d/%Y %H:%M:%S')
-
-            # Get metrics as separate columns:
-            self.tweets_df['likes'] = self.tweets_df.public_metrics.apply(lambda x: x['like_count'])
-            self.tweets_df['replies'] = self.tweets_df.public_metrics.apply(lambda x: x['reply_count'])
-            self.tweets_df['retweets'] = self.tweets_df.public_metrics.apply(lambda x: x['retweet_count'])
-
             # saving final dataframes
 
             self.tweets_df.to_csv(f'{filename}_tweets_{self.timestamp}', index=False)
@@ -366,7 +364,8 @@ class TweetDownloader:
 
             query_params = {'query': query,
                             'start_time': '2007-01-01T00:00:00z',
-                            'end_time': validate_date((datetime.now()-timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")),
+                            'end_time': validate_date(
+                                (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%Sz")),
                             'expansions': 'author_id',
                             'tweet.fields': 'created_at,author_id,id,conversation_id',
                             'user.fields': 'id,name,username,public_metrics',
@@ -381,8 +380,8 @@ class TweetDownloader:
             total_replies = df_tweets_rep.shape[0]
 
             if total_replies >= max_replies:
-                break
                 print('The desired maximum amount of replies was reached.')
+                break
 
         if save_final:
             df_tweets_rep.to_csv(f'{filename}_replies_{self.timestamp}', index=False)
@@ -393,37 +392,37 @@ class TweetDownloader:
 
         return df_tweets_rep
 
-    def build_dataframes(self):
-        # Loop that goes through the tweet pages and stores data in DataFrames
-        print('Building DataFrame from Tweet pages...')
-
-        df_tweets = pd.DataFrame()
-        df_places = pd.DataFrame()
-        df_authors = pd.DataFrame()
-
-        for page in self.tweets:
-            df_page = pd.DataFrame(page[0]['data'])
-            df_page_authors = pd.DataFrame(page[0]['includes']['users'])
-
-            try:
-                df_page_places = pd.DataFrame(page[0]['includes']['places'])
-                df_places = pd.concat([df_places, df_page_places])
-            except KeyError:
-                print('No places on this page...')
-                print('Building DataFrame from Tweet pages...')
-            df_tweets = pd.concat([df_tweets, df_page])
-            df_authors = pd.concat([df_authors, df_page_authors])
-
-        # resets index of dataframes to avoid redundancy after concatenation
-        df_tweets.reset_index(drop=True, inplace=True)
-        df_places.reset_index(drop=True, inplace=True)
-        df_authors.reset_index(drop=True, inplace=True)
-
-        self.tweets_df = df_tweets
-        self.places_df = df_places
-        self.authors_df = df_authors
-
-        print('Done')
+#    def build_dataframes(self):
+#        # Loop that goes through the tweet pages and stores data in DataFrames
+#        print('Building DataFrame from Tweet pages...')
+#
+#        df_tweets = pd.DataFrame()
+#        df_places = pd.DataFrame()
+#        df_authors = pd.DataFrame()
+#
+#        for page in self.tweets:
+#            df_page = pd.DataFrame(page[0]['data'])
+#            df_page_authors = pd.DataFrame(page[0]['includes']['users'])
+#
+#            try:
+#                df_page_places = pd.DataFrame(page[0]['includes']['places'])
+#                df_places = pd.concat([df_places, df_page_places])
+#            except KeyError:
+#                print('No places on this page...')
+#                print('Building DataFrame from Tweet pages...')
+#            df_tweets = pd.concat([df_tweets, df_page])
+#            df_authors = pd.concat([df_authors, df_page_authors])
+#
+#        # resets index of dataframes to avoid redundancy after concatenation
+#        df_tweets.reset_index(drop=True, inplace=True)
+#        df_places.reset_index(drop=True, inplace=True)
+#        df_authors.reset_index(drop=True, inplace=True)
+#
+#        self.tweets_df = df_tweets
+#        self.places_df = df_places
+#        self.authors_df = df_authors
+#
+#        print('Done')
 
     def tweets_from_csv(self, path, sep=',', save_temp=True):
         """
@@ -461,7 +460,6 @@ class TweetDownloader:
         if pd.isna(end_time): end_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         if pd.isna(place): place = None
         if pd.isna(lang): lang = None
-
 
         if not pd.isna(lang):
             query += f' (lang:{lang})'
@@ -594,8 +592,8 @@ class TweetDownloader:
             custom_stopwords = []
         plt.rcParams.update({'font.size': 12})
 
-        #custom_stopwords.append('http')
-        #custom_stopwords.append('https')
+        # custom_stopwords.append('http')
+        # custom_stopwords.append('https')
 
         df_tweets = self.tweets_df.copy()
 
@@ -624,7 +622,7 @@ class TweetDownloader:
             plt.savefig(os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
             print('Wordcloud saved at', os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
         else:
-            plt.show()
+            plt.show(block=False)
 
         if bar_plot:
             # creates a dataframe to handle wordcount retrieved from wordcloud
@@ -641,12 +639,16 @@ class TweetDownloader:
             plt.ylabel("word", fontsize=50)
             plt.savefig(os.path.join(self.output_folder, f'{self.name}_wordcloud.png'))
 
+            df_bar_plot = df_wordcount[:20].copy()
+
             if save_bar_plot:
-                sns.barplot(df_wordcount.freq[:20],
-                            df_wordcount.word[:20]).get_figure().savefig(os.path.join(self.output_folder,
+                sns.barplot(data=df_bar_plot,
+                            x='word',
+                            y='freq').get_figure().savefig(os.path.join(self.output_folder,
                                                                                       f'{self.name}_barplot.png'))
                 print('Barplot saved at', os.path.join(self.output_folder, f'{self.name}_barplot.png'))
             else:
-                sns.barplot(df_wordcount.freq[:20],
-                            df_wordcount.word[:20]).get_figure()
-                plt.show()
+                sns.barplot(data=df_bar_plot,
+                            x='word',
+                            y='freq').get_figure()
+                plt.show(block=False)
