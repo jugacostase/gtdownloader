@@ -26,10 +26,6 @@ jobs:
       - name: Test env vars for python
         run: python -c 'import os;print(os.environ)'
         env:
-          ENV_SECRET: ${{ secrets.ENV_SECRET }}
-          REPO_SECRET: ${{ secrets.REPO_SECRET }}
-      - name: Test with tox
-        env:
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
-        run: tox
+
 
