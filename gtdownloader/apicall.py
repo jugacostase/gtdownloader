@@ -18,6 +18,7 @@ def retrieve_tweets(query_params, keys):
     global KEYS
 
     print('ALL-ENVIRON', os.environ)
+    print(os.environ['TWITTER_BEARER_TOKEN'])
 
     try:
         KEYS = load_credentials(keys)
