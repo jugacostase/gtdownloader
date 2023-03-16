@@ -8,6 +8,8 @@ jobs:
   test:
     environment: CI
     runs-on: ${{ matrix.os }}
+    env:
+      TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -25,7 +27,6 @@ jobs:
           pip install tox tox-gh-actions
       - name: Test with tox
         run: tox
-        env:
-          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+
 
 
